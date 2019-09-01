@@ -139,15 +139,18 @@ class __FullScreenNeekoPlayerState extends State<_FullScreenNeekoPlayer> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIOverlays(
+        widget.playerOptions.enabledSystemUIOverlaysWhenEnterLandscape);
     SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+        widget.playerOptions.preferredOrientationsWhenEnterLandscape);
   }
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-    SystemChrome.setPreferredOrientations([]);
+    SystemChrome.setEnabledSystemUIOverlays(
+        widget.playerOptions.enabledSystemUIOverlaysWhenExitLandscape);
+    SystemChrome.setPreferredOrientations(
+        widget.playerOptions.preferredOrientationsWhenExitLandscape);
     super.dispose();
   }
 }

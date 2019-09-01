@@ -18,7 +18,7 @@ class ProgressBar extends StatefulWidget {
       {this.playedColor,
       this.bufferedColor,
       this.handleColor,
-      this.backgroundColor: const Color(0xFFF5F5F5),
+      this.backgroundColor,
       this.onDragStart,
       this.onDragEnd,
       this.onDragUpdate,
@@ -55,8 +55,6 @@ class _ProgressBarState extends State<ProgressBar> {
     super.deactivate();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     void seekToRelativePosition(Offset globalPosition) {
@@ -66,6 +64,7 @@ class _ProgressBarState extends State<ProgressBar> {
       final Duration position = controller.value.duration * relative;
       controller.seekTo(position);
     }
+
 
     final playedPaint = Paint()
       ..color = widget.playedColor ?? Theme.of(context).primaryColor;
@@ -86,13 +85,12 @@ class _ProgressBarState extends State<ProgressBar> {
               color: Colors.transparent,
               child: CustomPaint(
                 painter: _ProgressBarPainter(
-                  value: controller.value,
-                  playedPaint: playedPaint,
-                  bufferedPaint: bufferedPaint,
-                  handlePaint: handlePaint,
-                  backgroundPaint: backgroundPaint,
-                  drawHandle: widget.showControllers?.value == true
-                ),
+                    value: controller.value,
+                    playedPaint: playedPaint,
+                    bufferedPaint: bufferedPaint,
+                    handlePaint: handlePaint,
+                    backgroundPaint: backgroundPaint,
+                    drawHandle: widget.showControllers?.value == true),
               ),
             ),
       onHorizontalDragStart: (details) {
@@ -147,14 +145,13 @@ class _ProgressBarPainter extends CustomPainter {
   final Paint handlePaint;
   final Paint backgroundPaint;
 
-  _ProgressBarPainter({
-    this.playedPaint,
-    this.bufferedPaint,
-    this.handlePaint,
-    this.backgroundPaint,
-    this.value,
-    this.drawHandle
-  });
+  _ProgressBarPainter(
+      {this.playedPaint,
+      this.bufferedPaint,
+      this.handlePaint,
+      this.backgroundPaint,
+      this.value,
+      this.drawHandle});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -214,7 +211,7 @@ class _ProgressBarPainter extends CustomPainter {
       ),
       playedPaint,
     );
-    if(drawHandle){
+    if (drawHandle) {
       canvas.drawCircle(
         Offset(playedPart, size.height / 2 + height / 2),
         height * 3,

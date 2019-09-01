@@ -42,6 +42,13 @@ class NeekoPlayerWidget extends StatefulWidget {
 
   final bool inFullScreen;
 
+  final Function onPortraitBackTap;
+
+  final Color progressBarPlayedColor;
+  final Color progressBarBufferedColor;
+  final Color progressBarHandleColor;
+  final Color progressBarBackgroundColor;
+
   NeekoPlayerWidget(
       {Key key,
       @required this.videoPlayerController,
@@ -53,7 +60,12 @@ class NeekoPlayerWidget extends StatefulWidget {
       this.width,
       this.actions,
       this.startAt = const Duration(seconds: 0),
-      this.inFullScreen = false})
+      this.inFullScreen = false,
+      this.onPortraitBackTap,
+      this.progressBarPlayedColor,
+      this.progressBarBufferedColor: const Color(0xFF757575),
+      this.progressBarHandleColor,
+      this.progressBarBackgroundColor: const Color(0xFFF5F5F5)})
       : assert(videoPlayerController != null),
         assert(playerOptions != null),
         super(key: key);
@@ -100,7 +112,6 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
   }
 
   _configureVideoPlayer() {
-
     if (widget.playerOptions.autoPlay) {
       _autoPlay();
     }
@@ -116,6 +127,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 
     if (controller.isFullScreen && !_inFullScreen) {
       _inFullScreen = true;
+      await controller.pause();
       var oldPosition = controller.value.position;
       Duration pos = await showFullScreenNeekoPlayer(
           context: context,
@@ -130,7 +142,15 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
               showFullScreenButton: widget.playerOptions.showFullScreenButton,
               autoPlay: true,
               useController: widget.playerOptions.useController,
-              isLive: widget.playerOptions.isLive),
+              isLive: widget.playerOptions.isLive,
+              preferredOrientationsWhenEnterLandscape:
+                  widget.playerOptions.preferredOrientationsWhenEnterLandscape,
+              preferredOrientationsWhenExitLandscape:
+                  widget.playerOptions.preferredOrientationsWhenExitLandscape,
+              enabledSystemUIOverlaysWhenEnterLandscape: widget
+                  .playerOptions.enabledSystemUIOverlaysWhenEnterLandscape,
+              enabledSystemUIOverlaysWhenExitLandscape: widget
+                  .playerOptions.enabledSystemUIOverlaysWhenExitLandscape),
           liveUIColor: widget.liveUIColor,
           dataSource: controller.dataSource,
           dataSourceType: controller.dataSourceType,
@@ -199,7 +219,8 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
             fit: StackFit.expand,
             overflow: Overflow.visible,
             children: <Widget>[
-              Hero(tag:"NeekoTag",child: _NeekoPlayer(controller: controller)),
+              Hero(
+                  tag: "NeekoTag", child: _NeekoPlayer(controller: controller)),
               if (widget.playerOptions.useController)
                 TouchShutter(
                   controller,
@@ -239,6 +260,10 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
                         child: ProgressBar(
                           controller,
                           showControllers: _showControllers,
+                          playedColor: widget.progressBarPlayedColor,
+                          handleColor: widget.progressBarHandleColor,
+                          backgroundColor: widget.progressBarBackgroundColor,
+                          bufferedColor: widget.progressBarBufferedColor,
                         ),
                         bottom: -27.9,
                       )
@@ -254,11 +279,19 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
                           aspectRatio: widget.aspectRatio,
                           liveUIColor: widget.liveUIColor,
                           showControllers: _showControllers,
+                          playedColor: widget.progressBarPlayedColor,
+                          handleColor: widget.progressBarHandleColor,
+                          backgroundColor: widget.progressBarBackgroundColor,
+                          bufferedColor: widget.progressBarBufferedColor,
                         )
                       : BottomBar(
                           controller,
                           aspectRatio: widget.aspectRatio,
                           showControllers: _showControllers,
+                          playedColor: widget.progressBarPlayedColor,
+                          handleColor: widget.progressBarHandleColor,
+                          backgroundColor: widget.progressBarBackgroundColor,
+                          bufferedColor: widget.progressBarBufferedColor,
                         ),
                 ),
             ],

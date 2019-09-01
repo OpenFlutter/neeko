@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'duration_formatter.dart';
 import 'neeko_player_controller.dart';
 import 'neeko_player_options.dart';
-import 'neeko_player_widget.dart';
 import 'progress_bar.dart';
 
 class CenterControllerActionButtons extends StatefulWidget {
@@ -108,10 +107,10 @@ class _CenterControllerActionButtonsState
                     if (_isPlaying) {
                       controller.pause();
                     } else {
-                      if (controller.value.duration.inMilliseconds ==
-                          controller.value.position.inMilliseconds) {
+                      if (controller.value.position.inMilliseconds >=
+                          controller.value.duration.inMilliseconds) {
                         controller.seekTo(Duration(seconds: 0));
-                        controller.play();
+//                        controller.play();
                       } else {
                         controller.play();
                       }
@@ -244,9 +243,15 @@ class TopBar extends StatefulWidget {
   final ValueNotifier<bool> showControllers;
   final Widget leading;
   final NeekoPlayerOptions options;
+  final Function onPortraitBackTap;
 
   const TopBar(this.controller,
-      {Key key, this.showControllers, this.actions, this.leading, this.options})
+      {Key key,
+      this.showControllers,
+      this.actions,
+      this.leading,
+      this.options,
+      this.onPortraitBackTap})
       : super(key: key);
 
   @override
@@ -304,7 +309,12 @@ class _TopBarState extends State<TopBar> {
     return Align(
       alignment: Alignment.centerLeft,
       child: FlatButton.icon(
-          onPressed: ()=>Navigator.of(context).pop(widget.controller.value.position),
+          onPressed: () {
+            if (widget.controller.isFullScreen)
+              Navigator.of(context).pop(widget.controller.value.position);
+            else if (widget.onPortraitBackTap != null)
+              widget.onPortraitBackTap();
+          },
           icon: Icon(
             orientation == Orientation.portrait
                 ? back
@@ -368,6 +378,11 @@ class _BottomBarState extends State<BottomBar> {
   _attachListenerToController() {
     controller.addListener(
       () {
+        if (controller.value.duration == null ||
+            controller.value.position == null) {
+          return;
+        }
+
         if (mounted) {
           setState(() {
             _currentPosition = controller.value.duration.inMilliseconds == 0
@@ -386,6 +401,7 @@ class _BottomBarState extends State<BottomBar> {
       controller = widget.controller;
       _attachListenerToController();
     }
+
     return Visibility(
       visible: widget.showControllers.value,
       child: Row(
@@ -494,6 +510,10 @@ class _LiveBottomBarState extends State<LiveBottomBar> {
   _attachListenerToController() {
     controller.addListener(
       () {
+        if (controller.value.duration == null ||
+            controller.value.position == null) {
+          return;
+        }
         if (mounted) {
           setState(() {
             _currentPosition = controller.value.position.inMilliseconds;
