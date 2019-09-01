@@ -251,6 +251,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
                       controller,
                       showControllers: _showControllers,
                       options: widget.playerOptions,
+                      actions: widget.actions,
                     )),
               if (widget.playerOptions.useController)
                 (!widget.playerOptions.isLive && !controller.isFullScreen)

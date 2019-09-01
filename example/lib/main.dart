@@ -120,6 +120,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: NeekoPlayerWidget(
         videoPlayerController: beeController,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.share,color: Colors.white,),
+              onPressed: () {
+                print("share");
+              })
+        ],
       ),
     );
   }

@@ -290,6 +290,7 @@ class _TopBarState extends State<TopBar> {
                     : 0,
                 duration: Duration(milliseconds: 300),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: widget.actions ?? [Container()],
                 ),
               ),
