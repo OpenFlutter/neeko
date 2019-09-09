@@ -6,12 +6,11 @@ import 'package:neeko/src/progress_bar.dart';
 import 'package:video_player/video_player.dart';
 
 import 'neeko_fullscreen_player.dart';
+import 'neeko_player.dart';
 import 'neeko_player_controller.dart';
 import 'neeko_player_options.dart';
 import 'video_controller_widgets.dart';
 import 'video_controller_wrapper.dart';
-
-part 'neeko_player.dart';
 
 ///core video player
 class NeekoPlayerWidget extends StatefulWidget {
@@ -154,7 +153,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 //    }
 
 //    _showControllers.dispose();
-//    _timer?.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -188,8 +187,32 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
       settings: RouteSettings(name: "neeko", isInitialRoute: false),
       pageBuilder: (BuildContext context, Animation<double> animation,
               Animation<double> secondaryAnimation) =>
-          fullScreenRoutePageBuilder(context, animation, secondaryAnimation,
-              widget.videoControllerWrapper),
+          fullScreenRoutePageBuilder(
+        context: context,
+        animation: animation,
+        secondaryAnimation: secondaryAnimation,
+        videoControllerWrapper: widget.videoControllerWrapper,
+        width: widget.width,
+        actions: widget.actions,
+        aspectRatio: widget.aspectRatio,
+        bufferIndicator: widget.bufferIndicator,
+        controllerTimeout: widget.controllerTimeout,
+        playerOptions: NeekoPlayerOptions(
+            enableDragSeek: widget.playerOptions.enableDragSeek,
+            showFullScreenButton: widget.playerOptions.showFullScreenButton,
+            autoPlay: true,
+            useController: widget.playerOptions.useController,
+            isLive: widget.playerOptions.isLive,
+            preferredOrientationsWhenEnterLandscape:
+                widget.playerOptions.preferredOrientationsWhenEnterLandscape,
+            preferredOrientationsWhenExitLandscape:
+                widget.playerOptions.preferredOrientationsWhenExitLandscape,
+            enabledSystemUIOverlaysWhenEnterLandscape:
+                widget.playerOptions.enabledSystemUIOverlaysWhenEnterLandscape,
+            enabledSystemUIOverlaysWhenExitLandscape:
+                widget.playerOptions.enabledSystemUIOverlaysWhenExitLandscape),
+        liveUIColor: widget.liveUIColor,
+      ),
     );
 
     route.completed.then((void value) {
@@ -216,8 +239,8 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
           overflow: Overflow.visible,
           children: <Widget>[
             Hero(
-                tag: "neekoPlayerHeroTag",
-                child: _NeekoPlayer(controllerWrapper: videoControllerWrapper)),
+                tag: "com.jarvanmo.neekoPlayerHeroTag",
+                child: NeekoPlayer(controllerWrapper: videoControllerWrapper)),
             if (widget.playerOptions.useController)
               TouchShutter(
                 videoControllerWrapper,
@@ -249,6 +272,8 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
                     showControllers: _showControllers,
                     options: widget.playerOptions,
                     actions: widget.actions,
+                    isFullscreen: false,
+                    onPortraitBackTap: widget.onPortraitBackTap,
                   )),
             if (widget.playerOptions.useController)
               (!widget.playerOptions.isLive)
@@ -281,6 +306,8 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
                         handleColor: widget.progressBarHandleColor,
                         backgroundColor: widget.progressBarBackgroundColor,
                         bufferedColor: widget.progressBarBufferedColor,
+                        isFullscreen: false,
+                        onEnterFullscreen: pushFullScreenWidget,
                       )
                     : BottomBar(
                         videoControllerWrapper,
@@ -290,6 +317,8 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
                         handleColor: widget.progressBarHandleColor,
                         backgroundColor: widget.progressBarBackgroundColor,
                         bufferedColor: widget.progressBarBufferedColor,
+                        isFullscreen: false,
+                        onEnterFullscreen: pushFullScreenWidget,
                       ),
               ),
           ],

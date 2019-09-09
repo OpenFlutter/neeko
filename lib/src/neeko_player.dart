@@ -1,15 +1,19 @@
-part of 'neeko_player_widget.dart';
 
-class _NeekoPlayer extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
+
+import 'video_controller_wrapper.dart';
+
+class NeekoPlayer extends StatefulWidget {
   final VideoControllerWrapper controllerWrapper;
 
-  const _NeekoPlayer({Key key, this.controllerWrapper}) : super(key: key);
+  const NeekoPlayer({Key key, this.controllerWrapper}) : super(key: key);
 
   @override
-  __NeekoPlayerState createState() => __NeekoPlayerState();
+  _NeekoPlayerState createState() => _NeekoPlayerState();
 }
 
-class __NeekoPlayerState extends State<_NeekoPlayer>
+class _NeekoPlayerState extends State<NeekoPlayer>
     with WidgetsBindingObserver {
   VideoPlayerController get controller => widget.controllerWrapper.controller;
 

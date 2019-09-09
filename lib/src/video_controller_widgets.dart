@@ -251,6 +251,9 @@ class TopBar extends StatefulWidget {
   final Widget leading;
   final NeekoPlayerOptions options;
   final Function onPortraitBackTap;
+  final Function onLandscapeBackTap;
+
+  final bool isFullscreen;
 
   const TopBar(this.controllerWrapper,
       {Key key,
@@ -258,7 +261,9 @@ class TopBar extends StatefulWidget {
       this.actions,
       this.leading,
       this.options,
-      this.onPortraitBackTap})
+      this.onPortraitBackTap,
+      this.onLandscapeBackTap,
+      this.isFullscreen = false})
       : super(key: key);
 
   @override
@@ -317,7 +322,6 @@ class _TopBarState extends State<TopBar> {
   }
 
   Widget _buildLeading(BuildContext context) {
-    final Orientation orientation = MediaQuery.of(context).orientation;
     final IconData back =
         Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back;
 
@@ -325,15 +329,15 @@ class _TopBarState extends State<TopBar> {
       alignment: Alignment.centerLeft,
       child: FlatButton.icon(
           onPressed: () {
-//            if (widget.controller.isFullScreen)
-//              Navigator.of(context).pop(widget.controller.value.position);
-//            else if (widget.onPortraitBackTap != null)
-//              widget.onPortraitBackTap();
+            if (widget.isFullscreen && widget.onLandscapeBackTap != null) {
+              widget.onLandscapeBackTap();
+            } else if (!widget.isFullscreen &&
+                widget.onPortraitBackTap != null) {
+              widget.onPortraitBackTap();
+            }
           },
           icon: Icon(
-            orientation == Orientation.portrait
-                ? back
-                : Icons.keyboard_arrow_down,
+            widget.isFullscreen ? Icons.keyboard_arrow_down : back,
             color: Colors.white,
             size: 24,
           ),
@@ -342,8 +346,7 @@ class _TopBarState extends State<TopBar> {
                 ? ""
                 : widget.controllerWrapper.dataSource.displayName,
             style: TextStyle(
-                color: Colors.white,
-                fontSize: orientation == Orientation.portrait ? 14 : 16),
+                color: Colors.white, fontSize: widget.isFullscreen ? 16 : 14),
           )),
     );
   }
@@ -358,6 +361,11 @@ class BottomBar extends StatefulWidget {
   final double aspectRatio;
   final ValueNotifier<bool> showControllers;
 
+  final bool isFullscreen;
+
+  final Function onEnterFullscreen;
+  final Function onExitFullscreen;
+
   const BottomBar(this.controllerWrapper,
       {Key key,
       this.playedColor,
@@ -365,7 +373,10 @@ class BottomBar extends StatefulWidget {
       this.handleColor,
       this.backgroundColor,
       this.aspectRatio,
-      this.showControllers})
+      this.showControllers,
+      this.isFullscreen = false,
+      this.onEnterFullscreen,
+      this.onExitFullscreen})
       : super(key: key);
 
   @override
@@ -464,15 +475,15 @@ class _BottomBarState extends State<BottomBar> {
           ),
           IconButton(
             icon: Icon(
-              Icons.fullscreen,
+              widget.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
               color: Colors.white,
             ),
             onPressed: () {
-//              if (controller.isFullScreen) {
-//                controller.exitFullScreen();
-//              } else {
-//                controller.enterFullScreen();
-//              }
+              if (widget.isFullscreen && widget.onExitFullscreen != null) {
+              } else if (!widget.isFullscreen &&
+                  widget.onEnterFullscreen != null) {
+                widget.onEnterFullscreen();
+              }
             },
           ),
         ],
@@ -493,6 +504,11 @@ class LiveBottomBar extends StatefulWidget {
 
   final Color liveUIColor;
 
+  final bool isFullscreen;
+
+  final Function onEnterFullscreen;
+  final Function onExitFullscreen;
+
   const LiveBottomBar(this.controllerWrapper,
       {Key key,
       this.playedColor,
@@ -501,7 +517,10 @@ class LiveBottomBar extends StatefulWidget {
       this.backgroundColor,
       this.aspectRatio,
       this.showControllers,
-      this.liveUIColor})
+      this.liveUIColor,
+      this.isFullscreen = false,
+      this.onEnterFullscreen,
+      this.onExitFullscreen})
       : super(key: key);
 
   @override
@@ -596,7 +615,7 @@ class _LiveBottomBarState extends State<LiveBottomBar> {
             child: Material(
               color: widget.liveUIColor,
               child: Text(
-                " LIVE ",
+                "LIVE ",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12.0,
@@ -607,17 +626,15 @@ class _LiveBottomBarState extends State<LiveBottomBar> {
           ),
           IconButton(
             icon: Icon(
-              Icons.fullscreen,
+              widget.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
               color: Colors.white,
             ),
             onPressed: () {
-//              if (controller.isFullScreen) {
-//                controller.exitFullScreen();
-//              } else {
-//                controller.enterFullScreen();
-//              }
-//              controller.value = controller.value
-//                  .copyWith(isFullScreen: !controller.value.isFullScreen);
+              if (widget.isFullscreen && widget.onExitFullscreen != null) {
+              } else if (!widget.isFullscreen &&
+                  widget.onEnterFullscreen != null) {
+                widget.onEnterFullscreen();
+              }
             },
           ),
         ],
