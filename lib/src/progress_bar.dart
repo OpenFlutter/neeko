@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:neeko/src/video_controller_wrapper.dart';
 import 'package:video_player/video_player.dart';
 
 class ProgressBar extends StatefulWidget {
-  final VideoPlayerController videoController;
+  final VideoControllerWrapper controllerWrapper;
   final Color playedColor;
   final Color bufferedColor;
   final Color handleColor;
@@ -14,7 +15,7 @@ class ProgressBar extends StatefulWidget {
 
   final ValueNotifier<bool> showControllers;
 
-  ProgressBar(this.videoController,
+  ProgressBar(this.controllerWrapper,
       {this.playedColor,
       this.bufferedColor,
       this.handleColor,
@@ -37,7 +38,7 @@ class _ProgressBarState extends State<ProgressBar> {
     };
   }
 
-  VideoPlayerController get controller => widget.videoController;
+  VideoPlayerController get controller => widget.controllerWrapper.controller;
   bool _controllerWasPlaying = false;
 
   @override

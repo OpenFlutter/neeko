@@ -54,6 +54,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final NeekoPlayerController beeController =
       NeekoPlayerController.network(beeUri)..displayName = "测试";
 
+  final VideoControllerWrapper videoControllerWrapper = VideoControllerWrapper(
+      DataSource.network(
+          'http://vfx.mtime.cn/Video/2019/03/09/mp4/190309153658147087.mp4'));
+
   @override
   void initState() {
     super.initState();
@@ -119,10 +123,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       body: NeekoPlayerWidget(
+        videoControllerWrapper: videoControllerWrapper,
         videoPlayerController: beeController,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.share,color: Colors.white,),
+              icon: Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
               onPressed: () {
                 print("share");
               })

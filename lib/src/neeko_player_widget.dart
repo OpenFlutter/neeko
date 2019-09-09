@@ -2,18 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:neeko/src/progress_bar.dart';
 import 'package:video_player/video_player.dart';
 
+import 'neeko_fullscreen_player.dart';
 import 'neeko_player_controller.dart';
-import 'neeko_player_fullscreen_widget.dart';
 import 'neeko_player_options.dart';
-import 'progress_bar.dart';
 import 'video_controller_widgets.dart';
+import 'video_controller_wrapper.dart';
 
 part 'neeko_player.dart';
 
 ///core video player
 class NeekoPlayerWidget extends StatefulWidget {
+  final VideoControllerWrapper videoControllerWrapper;
+
   final NeekoPlayerController videoPlayerController;
   final NeekoPlayerOptions playerOptions;
 
@@ -51,6 +54,7 @@ class NeekoPlayerWidget extends StatefulWidget {
 
   NeekoPlayerWidget(
       {Key key,
+      @required this.videoControllerWrapper,
       @required this.videoPlayerController,
       this.playerOptions = const NeekoPlayerOptions(),
       this.controllerTimeout = const Duration(seconds: 3),
@@ -79,7 +83,12 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 
   Timer _timer;
 
-  NeekoPlayerController controller;
+  VideoPlayerController get controller =>
+      widget.videoControllerWrapper.controller;
+
+  VideoControllerWrapper get videoControllerWrapper =>
+      widget.videoControllerWrapper;
+
   bool _inFullScreen = false;
 
   bool _firstLoad = true;
@@ -106,9 +115,9 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
   }
 
   void _loadController() {
-    controller = widget.videoPlayerController;
-    controller.isFullScreen = widget.inFullScreen ?? false;
-    controller.addListener(_listener);
+//    controller = widget.videoPlayerController;
+//    controller.isFullScreen = widget.inFullScreen ?? false;
+//    controller.addListener(_listener);
   }
 
   _configureVideoPlayer() {
@@ -125,49 +134,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 //
 //    }
 
-    if (controller.isFullScreen && !_inFullScreen) {
-      _inFullScreen = true;
-      await controller.pause();
-      var oldPosition = controller.value.position;
-      Duration pos = await showFullScreenNeekoPlayer(
-          context: context,
-          startAt: oldPosition,
-          width: widget.width,
-          actions: widget.actions,
-          aspectRatio: widget.aspectRatio,
-          bufferIndicator: widget.bufferIndicator,
-          controllerTimeout: widget.controllerTimeout,
-          playerOptions: NeekoPlayerOptions(
-              enableDragSeek: widget.playerOptions.enableDragSeek,
-              showFullScreenButton: widget.playerOptions.showFullScreenButton,
-              autoPlay: true,
-              useController: widget.playerOptions.useController,
-              isLive: widget.playerOptions.isLive,
-              preferredOrientationsWhenEnterLandscape:
-                  widget.playerOptions.preferredOrientationsWhenEnterLandscape,
-              preferredOrientationsWhenExitLandscape:
-                  widget.playerOptions.preferredOrientationsWhenExitLandscape,
-              enabledSystemUIOverlaysWhenEnterLandscape: widget
-                  .playerOptions.enabledSystemUIOverlaysWhenEnterLandscape,
-              enabledSystemUIOverlaysWhenExitLandscape: widget
-                  .playerOptions.enabledSystemUIOverlaysWhenExitLandscape),
-          liveUIColor: widget.liveUIColor,
-          dataSource: controller.dataSource,
-          dataSourceType: controller.dataSourceType,
-          displayName: controller.displayName,
-          package: controller.package);
-      controller.seekTo(pos ?? Duration(seconds: 1));
-      _inFullScreen = false;
-      controller.exitFullScreen();
-    }
-
-    if (!controller.isFullScreen && _inFullScreen) {
-      _inFullScreen = false;
-      Navigator.pop<Duration>(context, controller.value.position);
-    }
-    if (mounted) {
-      setState(() {});
-    }
+//
   }
 
   _autoPlay() async {
@@ -182,121 +149,150 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 
   @override
   void dispose() {
-    if (widget.playerOptions.autoPlay) {
-      controller.dispose();
-    }
+//    if (widget.playerOptions.autoPlay) {
+//      controller.dispose();
+//    }
 
-    _showControllers.dispose();
-    _timer?.cancel();
+//    _showControllers.dispose();
+//    _timer?.cancel();
     super.dispose();
+  }
+
+  Widget _buildFullScreenVideo() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("title full"),
+      ),
+      body: Center(
+        child: AspectRatio(
+          aspectRatio: 3 / 2,
+          child: Hero(
+            tag: controller,
+            child: VideoPlayer(controller),
+          ),
+        ),
+      ),
+    );
+  }
+
+//  Widget fullScreenRoutePageBuilder(
+//      BuildContext context,
+//      Animation<double> animation,
+//      Animation<double> secondaryAnimation,
+//      ) {
+//    return _buildFullScreenVideo();
+//  }
+
+  void pushFullScreenWidget() {
+    final TransitionRoute<void> route = PageRouteBuilder<void>(
+      settings: RouteSettings(name: "neeko", isInitialRoute: false),
+      pageBuilder: (BuildContext context, Animation<double> animation,
+              Animation<double> secondaryAnimation) =>
+          fullScreenRoutePageBuilder(context, animation, secondaryAnimation,
+              widget.videoControllerWrapper),
+    );
+
+    route.completed.then((void value) {
+//      controller.setVolume(0.0);
+    });
+
+//    controller.setVolume(1.0);
+    Navigator.of(context).push(route);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (controller.isFullScreen == null) {
-      controller.isFullScreen =
-          MediaQuery.of(context).orientation == Orientation.landscape;
-    }
+//    if (controller.isFullScreen == null) {
+//      controller.isFullScreen =
+//          MediaQuery.of(context).orientation == Orientation.landscape;
+//    }
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (!widget.playerOptions.showFullScreenButton) {
-          return Future.value(true);
-        }
-
-        bool isFullScreen = controller.isFullScreen;
-        if (isFullScreen) {
-          controller.exitFullScreen();
-        }
-
-        return Future.value(!isFullScreen);
-      },
-      child: Container(
-        width: widget.width ?? MediaQuery.of(context).size.width,
-        child: AspectRatio(
-          aspectRatio: widget.aspectRatio,
-          child: Stack(
-            fit: StackFit.expand,
-            overflow: Overflow.visible,
-            children: <Widget>[
-              Hero(
-                  tag: "NeekoTag", child: _NeekoPlayer(controller: controller)),
-              if (widget.playerOptions.useController)
-                TouchShutter(
-                  controller,
+    return Container(
+      width: widget.width ?? MediaQuery.of(context).size.width,
+      child: AspectRatio(
+        aspectRatio: widget.aspectRatio,
+        child: Stack(
+          fit: StackFit.expand,
+          overflow: Overflow.visible,
+          children: <Widget>[
+            Hero(
+                tag: "neekoPlayerHeroTag",
+                child: _NeekoPlayer(controllerWrapper: videoControllerWrapper)),
+            if (widget.playerOptions.useController)
+              TouchShutter(
+                videoControllerWrapper,
+                showControllers: _showControllers,
+                enableDragSeek: widget.playerOptions.enableDragSeek,
+              ),
+            if (widget.playerOptions.useController)
+              Center(
+                child: CenterControllerActionButtons(
+                  videoControllerWrapper,
                   showControllers: _showControllers,
-                  enableDragSeek: widget.playerOptions.enableDragSeek,
-                ),
-              if (widget.playerOptions.useController)
-                Center(
-                  child: CenterControllerActionButtons(
-                    controller,
-                    showControllers: _showControllers,
-                    bufferIndicator: widget.bufferIndicator ??
-                        Container(
-                          width: 70.0,
-                          height: 70.0,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation(Colors.white),
-                          ),
+                  bufferIndicator: widget.bufferIndicator ??
+                      Container(
+                        width: 70.0,
+                        height: 70.0,
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(Colors.white),
                         ),
-                  ),
+                      ),
                 ),
-              if (widget.playerOptions.useController)
-                Positioned(
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    child: TopBar(
-                      controller,
-                      showControllers: _showControllers,
-                      options: widget.playerOptions,
-                      actions: widget.actions,
-                    )),
-              if (widget.playerOptions.useController)
-                (!widget.playerOptions.isLive && !controller.isFullScreen)
-                    ? Positioned(
-                        left: 0,
-                        right: 0,
-                        child: ProgressBar(
-                          controller,
-                          showControllers: _showControllers,
-                          playedColor: widget.progressBarPlayedColor,
-                          handleColor: widget.progressBarHandleColor,
-                          backgroundColor: widget.progressBarBackgroundColor,
-                          bufferedColor: widget.progressBarBufferedColor,
-                        ),
-                        bottom: -27.9,
-                      )
-                    : Container(),
-              if (widget.playerOptions.useController)
-                Positioned(
-                  bottom: 0,
+              ),
+            if (widget.playerOptions.useController)
+              Positioned(
                   left: 0,
                   right: 0,
-                  child: widget.playerOptions.isLive
-                      ? LiveBottomBar(
-                          controller,
-                          aspectRatio: widget.aspectRatio,
-                          liveUIColor: widget.liveUIColor,
-                          showControllers: _showControllers,
-                          playedColor: widget.progressBarPlayedColor,
-                          handleColor: widget.progressBarHandleColor,
-                          backgroundColor: widget.progressBarBackgroundColor,
-                          bufferedColor: widget.progressBarBufferedColor,
-                        )
-                      : BottomBar(
-                          controller,
-                          aspectRatio: widget.aspectRatio,
-                          showControllers: _showControllers,
-                          playedColor: widget.progressBarPlayedColor,
-                          handleColor: widget.progressBarHandleColor,
-                          backgroundColor: widget.progressBarBackgroundColor,
-                          bufferedColor: widget.progressBarBufferedColor,
-                        ),
-                ),
-            ],
-          ),
+                  top: 0,
+                  child: TopBar(
+                    videoControllerWrapper,
+                    showControllers: _showControllers,
+                    options: widget.playerOptions,
+                    actions: widget.actions,
+                  )),
+            if (widget.playerOptions.useController)
+              (!widget.playerOptions.isLive)
+                  ? Positioned(
+                      left: 0,
+                      right: 0,
+                      child: ProgressBar(
+                        videoControllerWrapper,
+                        showControllers: _showControllers,
+                        playedColor: widget.progressBarPlayedColor,
+                        handleColor: widget.progressBarHandleColor,
+                        backgroundColor: widget.progressBarBackgroundColor,
+                        bufferedColor: widget.progressBarBufferedColor,
+                      ),
+                      bottom: -27.9,
+                    )
+                  : Container(),
+            if (widget.playerOptions.useController)
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: widget.playerOptions.isLive
+                    ? LiveBottomBar(
+                        videoControllerWrapper,
+                        aspectRatio: widget.aspectRatio,
+                        liveUIColor: widget.liveUIColor,
+                        showControllers: _showControllers,
+                        playedColor: widget.progressBarPlayedColor,
+                        handleColor: widget.progressBarHandleColor,
+                        backgroundColor: widget.progressBarBackgroundColor,
+                        bufferedColor: widget.progressBarBufferedColor,
+                      )
+                    : BottomBar(
+                        videoControllerWrapper,
+                        aspectRatio: widget.aspectRatio,
+                        showControllers: _showControllers,
+                        playedColor: widget.progressBarPlayedColor,
+                        handleColor: widget.progressBarHandleColor,
+                        backgroundColor: widget.progressBarBackgroundColor,
+                        bufferedColor: widget.progressBarBufferedColor,
+                      ),
+              ),
+          ],
         ),
       ),
     );
