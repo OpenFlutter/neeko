@@ -11,6 +11,7 @@ import 'neeko_player_widget.dart';
 
 Future<Duration> showFullScreenNeekoPlayer(
     {@required BuildContext context,
+    NeekoPlayerController testController,
     double aspectRatio = 16 / 9,
     double width,
     Duration controllerTimeout,
@@ -39,6 +40,7 @@ Future<Duration> showFullScreenNeekoPlayer(
                 dataSource: dataSource,
                 dataSourceType: dataSourceType,
                 package: package,
+                controller: testController,
                 playerOptions: playerOptions,
               )));
 }
@@ -79,6 +81,8 @@ class _FullScreenNeekoPlayer extends StatefulWidget {
 
   final String package;
 
+  final NeekoPlayerController controller;
+
   const _FullScreenNeekoPlayer(
       {Key key,
       this.width,
@@ -93,7 +97,8 @@ class _FullScreenNeekoPlayer extends StatefulWidget {
       this.dataSource,
       this.dataSourceType,
       this.package,
-      this.playerOptions})
+      this.playerOptions,
+      this.controller})
       : super(key: key);
 
   @override
@@ -108,8 +113,7 @@ class __FullScreenNeekoPlayerState extends State<_FullScreenNeekoPlayer> {
       child: SafeArea(
         child: Center(
           child: NeekoPlayerWidget(
-            videoPlayerController: _buildNewController()
-              ..displayName = widget.displayName,
+            videoPlayerController: widget.controller,
             aspectRatio: widget.aspectRatio,
             actions: widget.actions,
             playerOptions: widget.playerOptions,

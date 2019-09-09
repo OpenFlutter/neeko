@@ -1,18 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 import 'duration_formatter.dart';
-import 'neeko_player_controller.dart';
 import 'neeko_player_options.dart';
 import 'progress_bar.dart';
+import 'video_controller_wrapper.dart';
 
 class CenterControllerActionButtons extends StatefulWidget {
-  final NeekoPlayerController controller;
+  final VideoControllerWrapper controllerWrapper;
   final ValueNotifier<bool> showControllers;
   final Widget bufferIndicator;
 
-  const CenterControllerActionButtons(this.controller,
+  const CenterControllerActionButtons(this.controllerWrapper,
       {Key key, this.showControllers, this.bufferIndicator})
       : super(key: key);
 
@@ -26,19 +27,19 @@ class _CenterControllerActionButtonsState
     with SingleTickerProviderStateMixin {
   bool _isPlaying = false;
 
-  NeekoPlayerController neekoController;
+  VideoControllerWrapper _controllerWrapper;
 
-  NeekoPlayerController get controller => neekoController;
+  VideoPlayerController get controller => _controllerWrapper.controller;
 
-  set controller(NeekoPlayerController controller) =>
-      neekoController = controller;
+  set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
+      _controllerWrapper = controllerWrapper;
 
   AnimationController _animController;
 
   @override
   void initState() {
     super.initState();
-    controller = widget.controller;
+    _controllerWrapper = widget.controllerWrapper;
     _animController = AnimationController(
       vsync: this,
       value: 0,
@@ -73,8 +74,8 @@ class _CenterControllerActionButtonsState
   Widget build(BuildContext context) {
     final iconSize = 60.0;
 
-    if (controller.hashCode != widget.controller.hashCode) {
-      controller = widget.controller;
+    if (_controllerWrapper.hashCode != widget.controllerWrapper.hashCode) {
+      _controllerWrapper = widget.controllerWrapper;
       _attachListenerToController();
     }
     if (controller.value.isBuffering) {
@@ -143,11 +144,11 @@ class _CenterControllerActionButtonsState
 }
 
 class TouchShutter extends StatefulWidget {
-  final NeekoPlayerController controller;
+  final VideoControllerWrapper controllerWrapper;
   final ValueNotifier<bool> showControllers;
   final bool enableDragSeek;
 
-  const TouchShutter(this.controller,
+  const TouchShutter(this.controllerWrapper,
       {Key key, this.showControllers, this.enableDragSeek})
       : super(key: key);
 
@@ -163,6 +164,13 @@ class _TouchShutterState extends State<TouchShutter> {
   String seekPosition = "";
 
   bool _dragging = false;
+
+  VideoControllerWrapper _controllerWrapper;
+
+  VideoPlayerController get controller => _controllerWrapper.controller;
+
+  set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
+      _controllerWrapper = controllerWrapper;
 
   @override
   void initState() {
@@ -187,8 +195,7 @@ class _TouchShutterState extends State<TouchShutter> {
             onHorizontalDragUpdate: (details) {
               delta = details.globalPosition.dx - dragStartPos;
               seekToPosition =
-                  (widget.controller.value.position.inMilliseconds +
-                          delta * 1000)
+                  (controller.value.position.inMilliseconds + delta * 1000)
                       .round();
               setState(() {
                 seekDuration = (delta < 0 ? "- " : "+ ") +
@@ -199,7 +206,7 @@ class _TouchShutterState extends State<TouchShutter> {
               });
             },
             onHorizontalDragEnd: (_) {
-              widget.controller.seekTo(Duration(milliseconds: seekToPosition));
+              controller.seekTo(Duration(milliseconds: seekToPosition));
               setState(() {
                 _dragging = false;
               });
@@ -238,20 +245,25 @@ class _TouchShutterState extends State<TouchShutter> {
 }
 
 class TopBar extends StatefulWidget {
-  final NeekoPlayerController controller;
+  final VideoControllerWrapper controllerWrapper;
   final List<Widget> actions;
   final ValueNotifier<bool> showControllers;
   final Widget leading;
   final NeekoPlayerOptions options;
   final Function onPortraitBackTap;
+  final Function onLandscapeBackTap;
 
-  const TopBar(this.controller,
+  final bool isFullscreen;
+
+  const TopBar(this.controllerWrapper,
       {Key key,
       this.showControllers,
       this.actions,
       this.leading,
       this.options,
-      this.onPortraitBackTap})
+      this.onPortraitBackTap,
+      this.onLandscapeBackTap,
+      this.isFullscreen = false})
       : super(key: key);
 
   @override
@@ -259,6 +271,13 @@ class TopBar extends StatefulWidget {
 }
 
 class _TopBarState extends State<TopBar> {
+  VideoControllerWrapper _controllerWrapper;
+
+  VideoPlayerController get controller => _controllerWrapper.controller;
+
+  set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
+      _controllerWrapper = controllerWrapper;
+
   @override
   void initState() {
     super.initState();
@@ -303,7 +322,6 @@ class _TopBarState extends State<TopBar> {
   }
 
   Widget _buildLeading(BuildContext context) {
-    final Orientation orientation = MediaQuery.of(context).orientation;
     final IconData back =
         Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back;
 
@@ -311,32 +329,31 @@ class _TopBarState extends State<TopBar> {
       alignment: Alignment.centerLeft,
       child: FlatButton.icon(
           onPressed: () {
-            if (widget.controller.isFullScreen)
-              Navigator.of(context).pop(widget.controller.value.position);
-            else if (widget.onPortraitBackTap != null)
+            if (widget.isFullscreen && widget.onLandscapeBackTap != null) {
+              widget.onLandscapeBackTap();
+            } else if (!widget.isFullscreen &&
+                widget.onPortraitBackTap != null) {
               widget.onPortraitBackTap();
+            }
           },
           icon: Icon(
-            orientation == Orientation.portrait
-                ? back
-                : Icons.keyboard_arrow_down,
+            widget.isFullscreen ? Icons.keyboard_arrow_down : back,
             color: Colors.white,
             size: 24,
           ),
           label: Text(
-            widget.controller.displayName == null
+            widget.controllerWrapper.dataSource?.displayName == null
                 ? ""
-                : widget.controller.displayName,
+                : widget.controllerWrapper.dataSource.displayName,
             style: TextStyle(
-                color: Colors.white,
-                fontSize: orientation == Orientation.portrait ? 14 : 16),
+                color: Colors.white, fontSize: widget.isFullscreen ? 16 : 14),
           )),
     );
   }
 }
 
 class BottomBar extends StatefulWidget {
-  final NeekoPlayerController controller;
+  final VideoControllerWrapper controllerWrapper;
   final Color playedColor;
   final Color bufferedColor;
   final Color handleColor;
@@ -344,14 +361,22 @@ class BottomBar extends StatefulWidget {
   final double aspectRatio;
   final ValueNotifier<bool> showControllers;
 
-  const BottomBar(this.controller,
+  final bool isFullscreen;
+
+  final Function onEnterFullscreen;
+  final Function onExitFullscreen;
+
+  const BottomBar(this.controllerWrapper,
       {Key key,
       this.playedColor,
       this.bufferedColor,
       this.handleColor,
       this.backgroundColor,
       this.aspectRatio,
-      this.showControllers})
+      this.showControllers,
+      this.isFullscreen = false,
+      this.onEnterFullscreen,
+      this.onExitFullscreen})
       : super(key: key);
 
   @override
@@ -362,12 +387,17 @@ class _BottomBarState extends State<BottomBar> {
   int _currentPosition = 0;
   int _duration = 0;
 
-  NeekoPlayerController controller;
+  VideoControllerWrapper _controllerWrapper;
+
+  VideoPlayerController get controller => _controllerWrapper.controller;
+
+  set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
+      _controllerWrapper = controllerWrapper;
 
   @override
   void initState() {
     super.initState();
-    controller = widget.controller;
+    _controllerWrapper = widget.controllerWrapper;
     _attachListenerToController();
     widget.showControllers.addListener(
       () {
@@ -398,8 +428,8 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller.hashCode != widget.controller.hashCode) {
-      controller = widget.controller;
+    if (_controllerWrapper.hashCode != widget.controllerWrapper.hashCode) {
+      controllerWrapper = widget.controllerWrapper;
       _attachListenerToController();
     }
 
@@ -415,15 +445,15 @@ class _BottomBarState extends State<BottomBar> {
             durationFormatter(_currentPosition),
             style: TextStyle(
               color: Colors.white,
-              fontSize: controller.isFullScreen ? 16.0 : 14.0,
+              fontSize: 14.0,
             ),
           ),
           Expanded(
             child: Padding(
               child: Visibility(
-                visible: controller.isFullScreen,
+                visible: true,
                 child: ProgressBar(
-                  controller,
+                  _controllerWrapper,
                   showControllers: widget.showControllers,
                   backgroundColor: widget.backgroundColor,
                   bufferedColor: widget.bufferedColor,
@@ -440,21 +470,19 @@ class _BottomBarState extends State<BottomBar> {
             "${durationFormatter(_duration)}",
             style: TextStyle(
               color: Colors.white,
-              fontSize: controller.isFullScreen ? 16.0 : 14.0,
+              fontSize: 14.0,
             ),
           ),
           IconButton(
             icon: Icon(
-              controller.isFullScreen
-                  ? Icons.fullscreen_exit
-                  : Icons.fullscreen,
+              widget.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
               color: Colors.white,
             ),
             onPressed: () {
-              if (controller.isFullScreen) {
-                controller.exitFullScreen();
-              } else {
-                controller.enterFullScreen();
+              if (widget.isFullscreen && widget.onExitFullscreen != null) {
+              } else if (!widget.isFullscreen &&
+                  widget.onEnterFullscreen != null) {
+                widget.onEnterFullscreen();
               }
             },
           ),
@@ -465,7 +493,8 @@ class _BottomBarState extends State<BottomBar> {
 }
 
 class LiveBottomBar extends StatefulWidget {
-  final NeekoPlayerController controller;
+  final VideoControllerWrapper controllerWrapper;
+
   final Color playedColor;
   final Color bufferedColor;
   final Color handleColor;
@@ -475,7 +504,12 @@ class LiveBottomBar extends StatefulWidget {
 
   final Color liveUIColor;
 
-  const LiveBottomBar(this.controller,
+  final bool isFullscreen;
+
+  final Function onEnterFullscreen;
+  final Function onExitFullscreen;
+
+  const LiveBottomBar(this.controllerWrapper,
       {Key key,
       this.playedColor,
       this.bufferedColor,
@@ -483,7 +517,10 @@ class LiveBottomBar extends StatefulWidget {
       this.backgroundColor,
       this.aspectRatio,
       this.showControllers,
-      this.liveUIColor})
+      this.liveUIColor,
+      this.isFullscreen = false,
+      this.onEnterFullscreen,
+      this.onExitFullscreen})
       : super(key: key);
 
   @override
@@ -494,12 +531,17 @@ class _LiveBottomBarState extends State<LiveBottomBar> {
   int _currentPosition = 0;
   double _currentSliderPosition = 0.0;
 
-  NeekoPlayerController controller;
+  VideoControllerWrapper _controllerWrapper;
+
+  VideoPlayerController get controller => _controllerWrapper.controller;
+
+  set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
+      _controllerWrapper = controllerWrapper;
 
   @override
   void initState() {
     super.initState();
-    controller = widget.controller;
+    controllerWrapper = widget.controllerWrapper;
     _attachListenerToController();
     widget.showControllers.addListener(
       () {
@@ -528,8 +570,8 @@ class _LiveBottomBarState extends State<LiveBottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller.hashCode != widget.controller.hashCode) {
-      controller = widget.controller;
+    if (_controllerWrapper.hashCode != widget.controllerWrapper.hashCode) {
+      controllerWrapper = widget.controllerWrapper;
       _attachListenerToController();
     }
     return Visibility(
@@ -573,7 +615,7 @@ class _LiveBottomBarState extends State<LiveBottomBar> {
             child: Material(
               color: widget.liveUIColor,
               child: Text(
-                " LIVE ",
+                "LIVE ",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12.0,
@@ -584,19 +626,15 @@ class _LiveBottomBarState extends State<LiveBottomBar> {
           ),
           IconButton(
             icon: Icon(
-              controller.isFullScreen
-                  ? Icons.fullscreen_exit
-                  : Icons.fullscreen,
+              widget.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
               color: Colors.white,
             ),
             onPressed: () {
-              if (controller.isFullScreen) {
-                controller.exitFullScreen();
-              } else {
-                controller.enterFullScreen();
+              if (widget.isFullscreen && widget.onExitFullscreen != null) {
+              } else if (!widget.isFullscreen &&
+                  widget.onEnterFullscreen != null) {
+                widget.onEnterFullscreen();
               }
-//              controller.value = controller.value
-//                  .copyWith(isFullScreen: !controller.value.isFullScreen);
             },
           ),
         ],

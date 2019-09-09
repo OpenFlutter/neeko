@@ -1,24 +1,30 @@
 
-part of 'neeko_player_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
+import 'video_controller_wrapper.dart';
 
-class _NeekoPlayer extends StatefulWidget {
+class NeekoPlayer extends StatefulWidget {
+  final VideoControllerWrapper controllerWrapper;
 
-  final NeekoPlayerController controller;
-
-  const _NeekoPlayer({Key key, this.controller}) : super(key: key);
+  const NeekoPlayer({Key key, this.controllerWrapper}) : super(key: key);
 
   @override
-  __NeekoPlayerState createState() => __NeekoPlayerState();
+  _NeekoPlayerState createState() => _NeekoPlayerState();
 }
 
-class __NeekoPlayerState extends State<_NeekoPlayer> with WidgetsBindingObserver {
+class _NeekoPlayerState extends State<NeekoPlayer>
+    with WidgetsBindingObserver {
+  VideoPlayerController get controller => widget.controllerWrapper.controller;
+
+//  set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
+//      _controllerWrapper = controllerWrapper;
 
   bool _pausedByUser = false;
 
   @override
   Widget build(BuildContext context) {
-    return VideoPlayer(widget.controller);
+    return VideoPlayer(widget.controllerWrapper.controller);
   }
 
   @override
@@ -37,18 +43,18 @@ class __NeekoPlayerState extends State<_NeekoPlayer> with WidgetsBindingObserver
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        if(!_pausedByUser){
-          widget.controller?.play();
+        if (!_pausedByUser) {
+          widget.controllerWrapper.controller?.play();
         }
 
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.suspending:
-        if(widget.controller?.value?.isPlaying == false){
+        if (widget.controllerWrapper.controller?.value?.isPlaying == false) {
           _pausedByUser = true;
         }
-        widget.controller?.pause();
+        widget.controllerWrapper.controller?.pause();
         break;
     }
   }
