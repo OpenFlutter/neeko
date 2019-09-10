@@ -7,7 +7,6 @@ import 'package:video_player/video_player.dart';
 
 import 'neeko_fullscreen_player.dart';
 import 'neeko_player.dart';
-import 'neeko_player_controller.dart';
 import 'neeko_player_options.dart';
 import 'video_controller_widgets.dart';
 import 'video_controller_wrapper.dart';
@@ -16,7 +15,6 @@ import 'video_controller_wrapper.dart';
 class NeekoPlayerWidget extends StatefulWidget {
   final VideoControllerWrapper videoControllerWrapper;
 
-  final NeekoPlayerController videoPlayerController;
   final NeekoPlayerOptions playerOptions;
 
   /// Defines the width of the player.
@@ -54,7 +52,6 @@ class NeekoPlayerWidget extends StatefulWidget {
   NeekoPlayerWidget(
       {Key key,
       @required this.videoControllerWrapper,
-      @required this.videoPlayerController,
       this.playerOptions = const NeekoPlayerOptions(),
       this.controllerTimeout = const Duration(seconds: 3),
       this.bufferIndicator,
@@ -69,7 +66,7 @@ class NeekoPlayerWidget extends StatefulWidget {
       this.progressBarBufferedColor: const Color(0xFF757575),
       this.progressBarHandleColor,
       this.progressBarBackgroundColor: const Color(0xFFF5F5F5)})
-      : assert(videoPlayerController != null),
+      : assert(videoControllerWrapper != null),
         assert(playerOptions != null),
         super(key: key);
 
@@ -153,6 +150,8 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 //    }
 
 //    _showControllers.dispose();
+    controller?.dispose();
+    videoControllerWrapper?.dispose();
     _timer?.cancel();
     super.dispose();
   }
