@@ -51,14 +51,23 @@ class _CenterControllerActionButtonsState
     });
   }
 
+  @override
+  dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
   _attachListenerToController() {
     controller.addListener(
       () {
-        if (mounted) {
-          setState(() {
-            _isPlaying = controller.value.isPlaying;
-          });
+        if (!mounted) {
+          return;
         }
+
+        setState(() {
+          _isPlaying = controller.value.isPlaying;
+        });
+
         if (controller.value.isPlaying) {
           _animController.forward();
         } else {
@@ -451,7 +460,7 @@ class _BottomBarState extends State<BottomBar> {
           Expanded(
             child: Padding(
               child: Visibility(
-                visible: true,
+                visible: widget.isFullscreen,
                 child: ProgressBar(
                   _controllerWrapper,
                   showControllers: widget.showControllers,

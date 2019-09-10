@@ -230,98 +230,99 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 //          MediaQuery.of(context).orientation == Orientation.landscape;
 //    }
 
-    return Container(
-      width: widget.width ?? MediaQuery.of(context).size.width,
-      child: AspectRatio(
-        aspectRatio: widget.aspectRatio,
-        child: Stack(
-          fit: StackFit.expand,
-          overflow: Overflow.visible,
-          children: <Widget>[
-            Hero(
-                tag: "com.jarvanmo.neekoPlayerHeroTag",
-                child: NeekoPlayer(controllerWrapper: videoControllerWrapper)),
-            if (widget.playerOptions.useController)
-              TouchShutter(
-                videoControllerWrapper,
-                showControllers: _showControllers,
-                enableDragSeek: widget.playerOptions.enableDragSeek,
-              ),
-            if (widget.playerOptions.useController)
-              Center(
-                child: CenterControllerActionButtons(
+    return Hero(
+      tag: "com.jarvanmo.neekoPlayerHeroTag",
+      child: Container(
+        width: widget.width ?? MediaQuery.of(context).size.width,
+        child: AspectRatio(
+          aspectRatio: widget.aspectRatio,
+          child: Stack(
+            fit: StackFit.expand,
+            overflow: Overflow.visible,
+            children: <Widget>[
+              NeekoPlayer(controllerWrapper: videoControllerWrapper),
+              if (widget.playerOptions.useController)
+                TouchShutter(
                   videoControllerWrapper,
                   showControllers: _showControllers,
-                  bufferIndicator: widget.bufferIndicator ??
-                      Container(
-                        width: 70.0,
-                        height: 70.0,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation(Colors.white),
-                        ),
-                      ),
+                  enableDragSeek: widget.playerOptions.enableDragSeek,
                 ),
-              ),
-            if (widget.playerOptions.useController)
-              Positioned(
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  child: TopBar(
+              if (widget.playerOptions.useController)
+                Center(
+                  child: CenterControllerActionButtons(
                     videoControllerWrapper,
                     showControllers: _showControllers,
-                    options: widget.playerOptions,
-                    actions: widget.actions,
-                    isFullscreen: false,
-                    onPortraitBackTap: widget.onPortraitBackTap,
-                  )),
-            if (widget.playerOptions.useController)
-              (!widget.playerOptions.isLive)
-                  ? Positioned(
-                      left: 0,
-                      right: 0,
-                      child: ProgressBar(
-                        videoControllerWrapper,
-                        showControllers: _showControllers,
-                        playedColor: widget.progressBarPlayedColor,
-                        handleColor: widget.progressBarHandleColor,
-                        backgroundColor: widget.progressBarBackgroundColor,
-                        bufferedColor: widget.progressBarBufferedColor,
-                      ),
-                      bottom: -27.9,
-                    )
-                  : Container(),
-            if (widget.playerOptions.useController)
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: widget.playerOptions.isLive
-                    ? LiveBottomBar(
-                        videoControllerWrapper,
-                        aspectRatio: widget.aspectRatio,
-                        liveUIColor: widget.liveUIColor,
-                        showControllers: _showControllers,
-                        playedColor: widget.progressBarPlayedColor,
-                        handleColor: widget.progressBarHandleColor,
-                        backgroundColor: widget.progressBarBackgroundColor,
-                        bufferedColor: widget.progressBarBufferedColor,
-                        isFullscreen: false,
-                        onEnterFullscreen: pushFullScreenWidget,
+                    bufferIndicator: widget.bufferIndicator ??
+                        Container(
+                          width: 70.0,
+                          height: 70.0,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                          ),
+                        ),
+                  ),
+                ),
+              if (widget.playerOptions.useController)
+                Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: TopBar(
+                      videoControllerWrapper,
+                      showControllers: _showControllers,
+                      options: widget.playerOptions,
+                      actions: widget.actions,
+                      isFullscreen: false,
+                      onPortraitBackTap: widget.onPortraitBackTap,
+                    )),
+              if (widget.playerOptions.useController)
+                (!widget.playerOptions.isLive)
+                    ? Positioned(
+                        left: 0,
+                        right: 0,
+                        child: ProgressBar(
+                          videoControllerWrapper,
+                          showControllers: _showControllers,
+                          playedColor: widget.progressBarPlayedColor,
+                          handleColor: widget.progressBarHandleColor,
+                          backgroundColor: widget.progressBarBackgroundColor,
+                          bufferedColor: widget.progressBarBufferedColor,
+                        ),
+                        bottom: -27.9,
                       )
-                    : BottomBar(
-                        videoControllerWrapper,
-                        aspectRatio: widget.aspectRatio,
-                        showControllers: _showControllers,
-                        playedColor: widget.progressBarPlayedColor,
-                        handleColor: widget.progressBarHandleColor,
-                        backgroundColor: widget.progressBarBackgroundColor,
-                        bufferedColor: widget.progressBarBufferedColor,
-                        isFullscreen: false,
-                        onEnterFullscreen: pushFullScreenWidget,
-                      ),
-              ),
-          ],
+                    : Container(),
+              if (widget.playerOptions.useController)
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: widget.playerOptions.isLive
+                      ? LiveBottomBar(
+                          videoControllerWrapper,
+                          aspectRatio: widget.aspectRatio,
+                          liveUIColor: widget.liveUIColor,
+                          showControllers: _showControllers,
+                          playedColor: widget.progressBarPlayedColor,
+                          handleColor: widget.progressBarHandleColor,
+                          backgroundColor: widget.progressBarBackgroundColor,
+                          bufferedColor: widget.progressBarBufferedColor,
+                          isFullscreen: false,
+                          onEnterFullscreen: pushFullScreenWidget,
+                        )
+                      : BottomBar(
+                          videoControllerWrapper,
+                          aspectRatio: widget.aspectRatio,
+                          showControllers: _showControllers,
+                          playedColor: widget.progressBarPlayedColor,
+                          handleColor: widget.progressBarHandleColor,
+                          backgroundColor: widget.progressBarBackgroundColor,
+                          bufferedColor: widget.progressBarBufferedColor,
+                          isFullscreen: false,
+                          onEnterFullscreen: pushFullScreenWidget,
+                        ),
+                ),
+            ],
+          ),
         ),
       ),
     );
