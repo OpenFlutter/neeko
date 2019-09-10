@@ -489,6 +489,7 @@ class _BottomBarState extends State<BottomBar> {
             ),
             onPressed: () {
               if (widget.isFullscreen && widget.onExitFullscreen != null) {
+                widget.onExitFullscreen();
               } else if (!widget.isFullscreen &&
                   widget.onEnterFullscreen != null) {
                 widget.onEnterFullscreen();
@@ -640,6 +641,7 @@ class _LiveBottomBarState extends State<LiveBottomBar> {
             ),
             onPressed: () {
               if (widget.isFullscreen && widget.onExitFullscreen != null) {
+                widget.onExitFullscreen();
               } else if (!widget.isFullscreen &&
                   widget.onEnterFullscreen != null) {
                 widget.onEnterFullscreen();
