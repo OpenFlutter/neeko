@@ -311,16 +311,9 @@ class _TopBarState extends State<TopBar> {
               flex: 7,
             ),
             Expanded(
-              child: AnimatedOpacity(
-                opacity: (widget.options.useController &&
-                        widget.showControllers.value)
-                    ? 1
-                    : 0,
-                duration: Duration(milliseconds: 300),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: widget.actions ?? [Container()],
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: widget.actions ?? [Container()],
               ),
               flex: 3,
             )

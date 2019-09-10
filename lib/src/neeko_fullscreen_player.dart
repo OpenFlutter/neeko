@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 import 'neeko_player.dart';
@@ -123,6 +124,11 @@ class __FullscreenPlayerState extends State<_FullscreenPlayer> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIOverlays(
+        widget.playerOptions.enabledSystemUIOverlaysWhenEnterLandscape);
+    SystemChrome.setPreferredOrientations(
+        widget.playerOptions.preferredOrientationsWhenEnterLandscape);
+
     _showControllers.addListener(() {
       _timer?.cancel();
       if (_showControllers.value) {
@@ -137,7 +143,10 @@ class __FullscreenPlayerState extends State<_FullscreenPlayer> {
   @override
   void dispose() {
     _timer?.cancel();
-
+    SystemChrome.setEnabledSystemUIOverlays(
+        widget.playerOptions.enabledSystemUIOverlaysWhenExitLandscape);
+    SystemChrome.setPreferredOrientations(
+        widget.playerOptions.preferredOrientationsWhenExitLandscape);
     super.dispose();
   }
 
