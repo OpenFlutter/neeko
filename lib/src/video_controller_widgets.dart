@@ -300,7 +300,8 @@ class _TopBarState extends State<TopBar> {
     return Visibility(
       visible: widget.showControllers.value,
       child: Padding(
-        padding: const EdgeInsets.all(2.0),
+        padding: EdgeInsets.only(
+            left: 2.0, right: 2.0, top: MediaQuery.of(context).padding.top),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
@@ -341,7 +342,7 @@ class _TopBarState extends State<TopBar> {
           icon: Icon(
             widget.isFullscreen ? Icons.keyboard_arrow_down : back,
             color: Colors.white,
-            size: 24,
+            size: widget.isFullscreen ? 32 : 24,
           ),
           label: Text(
             widget.controllerWrapper.dataSource?.displayName == null
