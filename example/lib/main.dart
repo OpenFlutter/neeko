@@ -124,7 +124,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: NeekoPlayerWidget(
         videoControllerWrapper: videoControllerWrapper,
-        videoPlayerController: beeController,
         actions: <Widget>[
           IconButton(
               icon: Icon(
