@@ -96,16 +96,8 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
   void initState() {
     super.initState();
     _loadController();
-    _showControllers.addListener(() {
-      _timer?.cancel();
-      if (_showControllers.value) {
-        _timer = Timer(
-          widget.controllerTimeout,
-          () => _showControllers.value = false,
-        );
-      }
-    });
 
+    _addShowControllerListener();
     _listenVideoControllerWrapper();
     _configureVideoPlayer();
   }
@@ -114,8 +106,21 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
     videoControllerWrapper.addListener(() {
       if (mounted)
         setState(() {
+          _addShowControllerListener();
 //          _autoPlay();
         });
+    });
+  }
+
+  void _addShowControllerListener(){
+    _showControllers.addListener(() {
+      _timer?.cancel();
+      if (_showControllers.value) {
+        _timer = Timer(
+          widget.controllerTimeout,
+              () => _showControllers.value = false,
+        );
+      }
     });
   }
 
@@ -138,6 +143,10 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
   }
 
   _autoPlay() async {
+    if(controller == null){
+      return;
+    }
+
     if (controller.value.isPlaying) {
       return;
     }
