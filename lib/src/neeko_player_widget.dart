@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:neeko/src/progress_bar.dart';
 import 'package:video_player/video_player.dart';
 
@@ -42,7 +41,13 @@ class NeekoPlayerWidget extends StatefulWidget {
 
   final bool inFullScreen;
 
+  /// Callback of back-button's onTap event  when the top controller is portrait
   final Function onPortraitBackTap;
+
+  /// When the skip previous button tapped
+  final Function onSkipPrevious;
+
+  final Function onSkipNext;
 
   final Color progressBarPlayedColor;
   final Color progressBarBufferedColor;
@@ -62,6 +67,8 @@ class NeekoPlayerWidget extends StatefulWidget {
       this.startAt = const Duration(seconds: 0),
       this.inFullScreen = false,
       this.onPortraitBackTap,
+      this.onSkipPrevious,
+      this.onSkipNext,
       this.progressBarPlayedColor,
       this.progressBarBufferedColor: const Color(0xFF757575),
       this.progressBarHandleColor,
@@ -85,10 +92,6 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
   VideoControllerWrapper get videoControllerWrapper =>
       widget.videoControllerWrapper;
 
-  bool _inFullScreen = false;
-
-  bool _firstLoad = true;
-
   @override
   void initState() {
     super.initState();
@@ -103,11 +106,14 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
       }
     });
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _inFullScreen = widget.inFullScreen;
-    });
-
+    _listenVideoControllerWrapper();
     _configureVideoPlayer();
+  }
+
+  void _listenVideoControllerWrapper() {
+    videoControllerWrapper.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   void _loadController() {
@@ -134,7 +140,6 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
   }
 
   _autoPlay() async {
-    await controller.initialize();
     if (controller.value.initialized) {
       if (widget.startAt != null) {
         await controller.seekTo(widget.startAt);
@@ -195,6 +200,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
         actions: widget.actions,
         aspectRatio: widget.aspectRatio,
         bufferIndicator: widget.bufferIndicator,
+        onSkipPrevious: widget.onSkipPrevious,
         controllerTimeout: widget.controllerTimeout,
         playerOptions: NeekoPlayerOptions(
             enableDragSeek: widget.playerOptions.enableDragSeek,
@@ -219,7 +225,9 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
     });
 
 //    controller.setVolume(1.0);
-    Navigator.of(context).push(route);
+    Navigator.of(context).push(route).then((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -251,6 +259,8 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
                   child: CenterControllerActionButtons(
                     videoControllerWrapper,
                     showControllers: _showControllers,
+                    isLive: widget.playerOptions.isLive,
+                    onSkipPrevious: widget.onSkipPrevious,
                     bufferIndicator: widget.bufferIndicator ??
                         Container(
                           width: 70.0,

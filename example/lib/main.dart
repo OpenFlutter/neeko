@@ -56,7 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final VideoControllerWrapper videoControllerWrapper = VideoControllerWrapper(
       DataSource.network(
-          'http://vfx.mtime.cn/Video/2019/03/09/mp4/190309153658147087.mp4',displayName: "displayName"));
+          'http://vfx.mtime.cn/Video/2019/03/09/mp4/190309153658147087.mp4',
+          displayName: "displayName"));
 
   @override
   void initState() {
@@ -123,6 +124,12 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       body: NeekoPlayerWidget(
+        onSkipPrevious: () {
+          print("skip");
+          videoControllerWrapper.prepareDataSource(DataSource.network(
+              "http://vfx.mtime.cn/Video/2019/03/12/mp4/190312083533415853.mp4",
+              displayName: "This house is not for sale"));
+        },
         videoControllerWrapper: videoControllerWrapper,
         actions: <Widget>[
           IconButton(

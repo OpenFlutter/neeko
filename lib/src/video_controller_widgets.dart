@@ -12,9 +12,17 @@ class CenterControllerActionButtons extends StatefulWidget {
   final VideoControllerWrapper controllerWrapper;
   final ValueNotifier<bool> showControllers;
   final Widget bufferIndicator;
+  final bool isLive;
+  final Function onSkipPrevious;
+  final Function onSkipNext;
 
   const CenterControllerActionButtons(this.controllerWrapper,
-      {Key key, this.showControllers, this.bufferIndicator})
+      {Key key,
+      this.showControllers,
+      this.bufferIndicator,
+      this.onSkipPrevious,
+      this.onSkipNext,
+      this.isLive = false})
       : super(key: key);
 
   @override
@@ -103,14 +111,15 @@ class _CenterControllerActionButtonsState
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.skip_previous,
-                    color: Colors.white,
+                if (!widget.isLive)
+                  IconButton(
+                    icon: Icon(
+                      Icons.skip_previous,
+                      color: Colors.white,
+                    ),
+                    onPressed: widget.onSkipPrevious,
+                    iconSize: iconSize,
                   ),
-                  onPressed: () {},
-                  iconSize: iconSize,
-                ),
                 InkWell(
                   borderRadius: BorderRadius.circular(50.0),
                   onTap: () {
@@ -135,14 +144,15 @@ class _CenterControllerActionButtonsState
                     size: iconSize * 1.5,
                   ),
                 ),
-                IconButton(
-                  icon: Icon(
-                    Icons.skip_next,
-                    color: Colors.white,
+                if (!widget.isLive)
+                  IconButton(
+                    icon: Icon(
+                      Icons.skip_next,
+                      color: Colors.white,
+                    ),
+                    onPressed: widget.onSkipNext,
+                    iconSize: iconSize,
                   ),
-                  onPressed: () {},
-                  iconSize: iconSize,
-                ),
               ],
             ),
           ),

@@ -18,7 +18,7 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
 
   DataSource get dataSource => _dataSource;
 
-  void prepareDataSource(DataSource dataSource) {
+  void prepareDataSource(DataSource dataSource) async {
     _dataSource = dataSource;
 
     switch (dataSource.dataSourceType) {
@@ -36,6 +36,8 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
             VideoPlayerController.file(File(dataSource.dataSource));
         break;
     }
+
+    await _videoPlayerController.initialize();
 
     notifyListeners();
   }

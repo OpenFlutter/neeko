@@ -32,18 +32,17 @@ class ProgressBar extends StatefulWidget {
 class _ProgressBarState extends State<ProgressBar> {
   VoidCallback listener;
 
-  _ProgressBarState() {
-    listener = () {
-      setState(() {});
-    };
-  }
-
   VideoPlayerController get controller => widget.controllerWrapper.controller;
   bool _controllerWasPlaying = false;
 
   @override
   void initState() {
     super.initState();
+    listener = () {
+      if (mounted) {
+        setState(() {});
+      }
+    };
     controller.addListener(listener);
     widget.showControllers?.addListener(() {
       if (mounted) setState(() {});
@@ -65,7 +64,6 @@ class _ProgressBarState extends State<ProgressBar> {
       final Duration position = controller.value.duration * relative;
       controller.seekTo(position);
     }
-
 
     final playedPaint = Paint()
       ..color = widget.playedColor ?? Theme.of(context).primaryColor;

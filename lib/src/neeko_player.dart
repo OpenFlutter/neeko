@@ -15,7 +15,6 @@ class NeekoPlayer extends StatefulWidget {
 
 class _NeekoPlayerState extends State<NeekoPlayer>
     with WidgetsBindingObserver {
-  VideoPlayerController get controller => widget.controllerWrapper.controller;
 
 //  set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
 //      _controllerWrapper = controllerWrapper;
@@ -39,23 +38,5 @@ class _NeekoPlayerState extends State<NeekoPlayer>
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        if (!_pausedByUser) {
-          widget.controllerWrapper.controller?.play();
-        }
 
-        break;
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-      case AppLifecycleState.suspending:
-        if (widget.controllerWrapper.controller?.value?.isPlaying == false) {
-          _pausedByUser = true;
-        }
-        widget.controllerWrapper.controller?.pause();
-        break;
-    }
-  }
 }
