@@ -122,21 +122,7 @@ class _CenterControllerActionButtonsState
                   ),
                 InkWell(
                   borderRadius: BorderRadius.circular(50.0),
-                  onTap: () {
-                    if (_isPlaying) {
-                      controller.pause();
-                    } else {
-                      if (controller.value.position.inMilliseconds >=
-                          controller.value.duration.inMilliseconds) {
-                        controller.seekTo(Duration(seconds: 0));
-//                        controller.play();
-                      } else {
-                        controller.play();
-                      }
-                    }
-
-                    _animate();
-                  },
+                  onTap: _play,
                   child: AnimatedIcon(
                     icon: AnimatedIcons.play_pause,
                     progress: _animController.view,
@@ -159,6 +145,23 @@ class _CenterControllerActionButtonsState
         ),
       );
     }
+  }
+
+  _play() {
+    if (_isPlaying) {
+      controller.pause();
+    } else {
+      if (controller.value.position == null) {
+        controller.play();
+      } else if (controller.value.position.inMilliseconds >=
+          controller.value.duration.inMilliseconds) {
+        controller.seekTo(Duration(seconds: 0));
+      } else {
+        controller.play();
+      }
+    }
+
+    _animate();
   }
 }
 

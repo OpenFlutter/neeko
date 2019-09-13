@@ -146,7 +146,9 @@ class __FullscreenPlayerState extends State<_FullscreenPlayer> {
 
     widget.videoControllerWrapper.controller.addListener(() {
       if (mounted) {
-        setState(() {});
+        setState(() {
+//          _autoPlay();
+        });
       }
     });
   }
@@ -258,5 +260,20 @@ class __FullscreenPlayerState extends State<_FullscreenPlayer> {
 
   _pop() {
     Navigator.of(context).pop();
+  }
+
+  void _autoPlay() async{
+    if(controller.value.isPlaying){
+      return;
+    }
+
+    if (widget.playerOptions.autoPlay) {
+      if (controller.value.initialized) {
+        if (widget.startAt != null) {
+          await controller.seekTo(widget.startAt);
+        }
+        controller.play();
+      }
+    }
   }
 }

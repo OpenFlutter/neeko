@@ -112,7 +112,10 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 
   void _listenVideoControllerWrapper() {
     videoControllerWrapper.addListener(() {
-      if (mounted) setState(() {});
+      if (mounted)
+        setState(() {
+//          _autoPlay();
+        });
     });
   }
 
@@ -131,15 +134,13 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
   }
 
   void _listener() async {
-//    if(_firstLoad){
-//      _firstLoad = false;
-//
-//    }
-
 //
   }
 
   _autoPlay() async {
+    if (controller.value.isPlaying) {
+      return;
+    }
     if (controller.value.initialized) {
       if (widget.startAt != null) {
         await controller.seekTo(widget.startAt);
