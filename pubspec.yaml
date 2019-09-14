@@ -1,8 +1,8 @@
 name: neeko
 description: Simple video player widget based on video_player. Neeko supports more actions such as timeline control, screen orientation control and so on.
 version: 0.0.1
-author:
-homepage:
+author: JarvanMo <jarvan.mo@gmail.com>
+homepage: https://github.com/OpenFlutter/neeko
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
