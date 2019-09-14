@@ -1,5 +1,5 @@
 name: neeko
-description: Neeko is video player view based on video_player. Neeko supports more actions such as timeline control, screen orientation control and so on.
+description: Simple video player widget based on video_player. Neeko supports more actions such as timeline control, screen orientation control and so on.
 version: 0.0.1
 author:
 homepage:
