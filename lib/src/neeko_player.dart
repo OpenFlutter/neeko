@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -13,9 +12,7 @@ class NeekoPlayer extends StatefulWidget {
   _NeekoPlayerState createState() => _NeekoPlayerState();
 }
 
-class _NeekoPlayerState extends State<NeekoPlayer>
-    with WidgetsBindingObserver {
-
+class _NeekoPlayerState extends State<NeekoPlayer> with WidgetsBindingObserver {
 //  set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
 //      _controllerWrapper = controllerWrapper;
 
@@ -37,6 +34,4 @@ class _NeekoPlayerState extends State<NeekoPlayer>
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
-
-
 }

@@ -262,8 +262,8 @@ class __FullscreenPlayerState extends State<_FullscreenPlayer> {
     Navigator.of(context).pop();
   }
 
-  void _autoPlay() async{
-    if(controller.value.isPlaying){
+  void _autoPlay() async {
+    if (controller.value.isPlaying) {
       return;
     }
 

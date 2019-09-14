@@ -112,13 +112,13 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
     });
   }
 
-  void _addShowControllerListener(){
+  void _addShowControllerListener() {
     _showControllers.addListener(() {
       _timer?.cancel();
       if (_showControllers.value) {
         _timer = Timer(
           widget.controllerTimeout,
-              () => _showControllers.value = false,
+          () => _showControllers.value = false,
         );
       }
     });
@@ -143,7 +143,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
   }
 
   _autoPlay() async {
-    if(controller == null){
+    if (controller == null) {
       return;
     }
 
