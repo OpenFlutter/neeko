@@ -3,7 +3,7 @@
 
 Simple video player widget based on [video_player](https://pub.dev/packages/video_player). Neek supports more actions such as timeline control, toggle fullscreen  and so on.
 
-<img src="./screenshot/screenshot.gif" width="300" height="480">
+<img src="https://github.com/OpenFlutter/neeko/blob/master/screenshot/screenshot.gif" width="300" height="480">
 
 Note: This plugin is still under development. [Pull Requests](https://github.com/OpenFlutter/neeko/pulls) are most welcome.
 
