@@ -8,7 +8,6 @@
 //PURPOSE.
 //See the Mulan PSL v1 for more details.
 
-
 String durationFormatter(int milliSeconds) {
   int seconds = milliSeconds ~/ 1000;
   final int hours = seconds ~/ 3600;

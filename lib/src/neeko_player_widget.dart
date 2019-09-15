@@ -147,9 +147,6 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 //    widget.videoPlayerController.setLooping(widget.playerOptions.loop);
   }
 
-  void _listener() async {
-//
-  }
 
   _autoPlay() async {
     if (controller == null) {
@@ -180,22 +177,6 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
     super.dispose();
   }
 
-  Widget _buildFullScreenVideo() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("title full"),
-      ),
-      body: Center(
-        child: AspectRatio(
-          aspectRatio: 3 / 2,
-          child: Hero(
-            tag: controller,
-            child: VideoPlayer(controller),
-          ),
-        ),
-      ),
-    );
-  }
 
 //  Widget fullScreenRoutePageBuilder(
 //      BuildContext context,

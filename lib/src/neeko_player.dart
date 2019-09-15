@@ -26,7 +26,7 @@ class _NeekoPlayerState extends State<NeekoPlayer> with WidgetsBindingObserver {
 //  set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
 //      _controllerWrapper = controllerWrapper;
 
-  bool _pausedByUser = false;
+//  bool _pausedByUser = false;
 
   @override
   Widget build(BuildContext context) {
