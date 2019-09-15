@@ -108,6 +108,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
 ```
 
+### Thanks
+
+- [youtube_player_flutter](https://pub.dev/packages/youtube_player_flutter)
+
 
 ### LICENSE
 -------
