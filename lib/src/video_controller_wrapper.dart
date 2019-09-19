@@ -63,16 +63,19 @@ class DataSource {
   final DataSourceType dataSourceType;
   final String package;
   final String displayName;
+  final dynamic id;
+  final Map extras;
 
-  DataSource.network(this.dataSource, {this.displayName})
+  DataSource.network(this.dataSource, {this.displayName, this.id, this.extras})
       : package = null,
         dataSourceType = DataSourceType.network;
 
-  DataSource.file(File file, {this.displayName})
+  DataSource.file(File file, {this.displayName, this.id, this.extras})
       : dataSource = '${file.path}',
         package = null,
         dataSourceType = DataSourceType.file;
 
-  DataSource.asset(this.dataSource, {this.package, this.displayName})
+  DataSource.asset(this.dataSource,
+      {this.package, this.displayName, this.id, this.extras})
       : dataSourceType = DataSourceType.network;
 }
