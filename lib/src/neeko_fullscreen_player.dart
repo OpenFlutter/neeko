@@ -276,6 +276,4 @@ class __FullscreenPlayerState extends State<_FullscreenPlayer> {
   _pop() {
     Navigator.of(context).pop();
   }
-
-
 }

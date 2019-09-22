@@ -163,7 +163,7 @@ class _CenterControllerActionButtonsState
   }
 
   _play() async {
-    if(!controller.value.initialized){
+    if (!controller.value.initialized) {
       return;
     }
 
@@ -174,8 +174,8 @@ class _CenterControllerActionButtonsState
         controller.play();
       } else if (controller.value.position.inMilliseconds >=
           controller.value.duration.inMilliseconds) {
-       await controller.seekTo(Duration(seconds: 0));
-       controller.play();
+        await controller.seekTo(Duration(seconds: 0));
+        controller.play();
       } else {
         controller.play();
       }

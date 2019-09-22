@@ -14,6 +14,7 @@
 //See the Mulan PSL v1 for more details.
 
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:neeko/src/progress_bar.dart';
 import 'package:video_player/video_player.dart';
@@ -152,7 +153,6 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 //    widget.videoPlayerController.setLooping(widget.playerOptions.loop);
   }
 
-
   _autoPlay() async {
     if (controller == null) {
       return;
@@ -181,7 +181,6 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
     _timer?.cancel();
     super.dispose();
   }
-
 
 //  Widget fullScreenRoutePageBuilder(
 //      BuildContext context,
