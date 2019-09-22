@@ -14,6 +14,7 @@
 //See the Mulan PSL v1 for more details.
 
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -161,7 +162,11 @@ class _CenterControllerActionButtonsState
     }
   }
 
-  _play() {
+  _play() async {
+    if(!controller.value.initialized){
+      return;
+    }
+
     if (_isPlaying) {
       controller.pause();
     } else {
@@ -169,7 +174,8 @@ class _CenterControllerActionButtonsState
         controller.play();
       } else if (controller.value.position.inMilliseconds >=
           controller.value.duration.inMilliseconds) {
-        controller.seekTo(Duration(seconds: 0));
+       await controller.seekTo(Duration(seconds: 0));
+       controller.play();
       } else {
         controller.play();
       }
