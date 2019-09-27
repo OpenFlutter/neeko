@@ -121,7 +121,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
     videoControllerWrapper.addListener(() {
       if (mounted)
         setState(() {
-          _addShowControllerListener();
+//          _addShowControllerListener();
 //          _autoPlay();
         });
     });
@@ -230,7 +230,9 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 
 //    controller.setVolume(1.0);
     Navigator.of(context).push(route).then((_) {
-      if (mounted) setState(() {});
+      if (mounted) setState(() {
+        _listenVideoControllerWrapper();
+      });
     });
   }
 
