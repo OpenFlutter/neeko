@@ -33,7 +33,7 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
 
   DataSource get dataSource => _dataSource;
 
-  void prepareDataSource(DataSource dataSource) async {
+  Future prepareDataSource(DataSource dataSource) async {
     _dataSource = dataSource;
 
     switch (dataSource.dataSourceType) {
