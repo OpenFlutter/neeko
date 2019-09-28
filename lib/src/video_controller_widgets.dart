@@ -155,7 +155,6 @@ class _CenterControllerActionButtonsState
                   IconButton(
                     icon: Icon(
                       Icons.skip_next,
-                      color: Colors.white,
                     ),
                     onPressed: widget.onSkipNext,
                     color: Colors.white,
