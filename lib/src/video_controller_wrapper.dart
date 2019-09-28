@@ -35,7 +35,7 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
   Future prepareDataSource(DataSource dataSource) async {
     _dataSource = dataSource;
 
-    if(_controllerPool.isNotEmpty){
+    if (_controllerPool.isNotEmpty) {
       await _controllerPool[0].pause();
     }
 

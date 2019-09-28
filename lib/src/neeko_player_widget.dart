@@ -230,9 +230,10 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 
 //    controller.setVolume(1.0);
     Navigator.of(context).push(route).then((_) {
-      if (mounted) setState(() {
-        _listenVideoControllerWrapper();
-      });
+      if (mounted)
+        setState(() {
+          _listenVideoControllerWrapper();
+        });
     });
   }
 

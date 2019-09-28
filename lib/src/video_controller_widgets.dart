@@ -63,7 +63,7 @@ class _CenterControllerActionButtonsState
   void initState() {
     super.initState();
     _controllerWrapper = widget.controllerWrapper;
-    _controllerWrapper.addListener((){
+    _controllerWrapper.addListener(() {
       _attachListenerToController();
     });
     _animController = AnimationController(
