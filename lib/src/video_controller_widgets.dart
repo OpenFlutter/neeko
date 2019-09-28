@@ -230,6 +230,10 @@ class _TouchShutterState extends State<TouchShutter> {
 
   @override
   Widget build(BuildContext context) {
+    if(controller == null){
+      return Container();
+    }
+
     return widget.enableDragSeek
         ? GestureDetector(
             onTap: () =>
