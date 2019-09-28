@@ -10,7 +10,7 @@ Note: This plugin is still under development. [Pull Requests](https://github.com
 
 ## Installation
 
-First, add `nekko` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `neeko` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 ### iOS
 
