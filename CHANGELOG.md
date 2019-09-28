@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Fix NPE when controller not ready
+
 ## 0.0.4
 
 * Better support skipping.
