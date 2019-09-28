@@ -63,12 +63,14 @@ class _CenterControllerActionButtonsState
   void initState() {
     super.initState();
     _controllerWrapper = widget.controllerWrapper;
+    _controllerWrapper.addListener((){
+      _attachListenerToController();
+    });
     _animController = AnimationController(
       vsync: this,
       value: 0,
       duration: Duration(milliseconds: 300),
     );
-    _attachListenerToController();
     widget.showControllers.addListener(() {
       if (mounted) setState(() {});
     });
@@ -81,7 +83,7 @@ class _CenterControllerActionButtonsState
   }
 
   _attachListenerToController() {
-    controller.addListener(
+    controller?.addListener(
       () {
         if (!mounted) {
           return;
@@ -104,6 +106,10 @@ class _CenterControllerActionButtonsState
 
   @override
   Widget build(BuildContext context) {
+    if (_controllerWrapper.controller == null) {
+      return Container();
+    }
+
     final iconSize = 60.0;
 
     if (_controllerWrapper.hashCode != widget.controllerWrapper.hashCode) {
@@ -434,7 +440,9 @@ class _BottomBarState extends State<BottomBar> {
   void initState() {
     super.initState();
     _controllerWrapper = widget.controllerWrapper;
-    _attachListenerToController();
+    _controllerWrapper.addListener(() {
+      _attachListenerToController();
+    });
     widget.showControllers.addListener(
       () {
         if (mounted) setState(() {});
@@ -443,7 +451,7 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   _attachListenerToController() {
-    controller.addListener(
+    controller?.addListener(
       () {
         if (controller.value.duration == null ||
             controller.value.position == null) {

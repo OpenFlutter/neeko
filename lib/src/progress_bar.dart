@@ -57,7 +57,10 @@ class _ProgressBarState extends State<ProgressBar> {
         setState(() {});
       }
     };
-    controller.addListener(listener);
+    widget.controllerWrapper.addListener(() {
+      controller?.addListener(listener);
+    });
+    controller?.addListener(listener);
     widget.showControllers?.addListener(() {
       if (mounted) setState(() {});
     });
@@ -65,12 +68,16 @@ class _ProgressBarState extends State<ProgressBar> {
 
   @override
   void deactivate() {
-    controller.removeListener(listener);
+    controller?.removeListener(listener);
     super.deactivate();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (controller == null) {
+      return Container();
+    }
+
     void seekToRelativePosition(Offset globalPosition) {
       final RenderBox box = context.findRenderObject();
       final Offset tapPos = box.globalToLocal(globalPosition);
