@@ -213,12 +213,10 @@ class _TouchShutterState extends State<TouchShutter> {
 
   bool _dragging = false;
 
-  VideoControllerWrapper _controllerWrapper;
 
-  VideoPlayerController get controller => _controllerWrapper.controller;
+  VideoPlayerController get controller => widget.controllerWrapper.controller;
 
-  set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
-      _controllerWrapper = controllerWrapper;
+
 
   @override
   void initState() {
