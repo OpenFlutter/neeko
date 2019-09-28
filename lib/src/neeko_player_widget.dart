@@ -205,6 +205,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
         aspectRatio: widget.aspectRatio,
         bufferIndicator: widget.bufferIndicator,
         onSkipPrevious: widget.onSkipPrevious,
+        onSkipNext: widget.onSkipNext,
         controllerTimeout: widget.controllerTimeout,
         playerOptions: NeekoPlayerOptions(
             enableDragSeek: widget.playerOptions.enableDragSeek,
@@ -268,6 +269,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
                     showControllers: _showControllers,
                     isLive: widget.playerOptions.isLive,
                     onSkipPrevious: widget.onSkipPrevious,
+                    onSkipNext: widget.onSkipNext,
                     bufferIndicator: widget.bufferIndicator ??
                         Container(
                           width: 70.0,

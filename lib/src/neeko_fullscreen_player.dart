@@ -37,6 +37,7 @@ Widget fullScreenRoutePageBuilder(
     List<Widget> actions,
     Duration startAt,
     Function onSkipPrevious,
+    Function onSkipNext,
     NeekoPlayerOptions playerOptions}) {
   return _FullscreenPlayer(
     videoControllerWrapper: videoControllerWrapper,
@@ -50,6 +51,7 @@ Widget fullScreenRoutePageBuilder(
     inFullScreen: true,
     playerOptions: playerOptions,
     onSkipPrevious: onSkipPrevious,
+    onSkipNext: onSkipNext,
   );
 }
 //
@@ -100,6 +102,7 @@ class _FullscreenPlayer extends StatefulWidget {
   final Function onPortraitBackTap;
 
   final Function onSkipPrevious;
+  final Function onSkipNext;
 
   final Color progressBarPlayedColor;
   final Color progressBarBufferedColor;
@@ -120,6 +123,7 @@ class _FullscreenPlayer extends StatefulWidget {
       this.inFullScreen,
       this.onPortraitBackTap,
       this.onSkipPrevious,
+      this.onSkipNext,
       this.progressBarPlayedColor,
       this.progressBarBufferedColor,
       this.progressBarHandleColor,
@@ -207,6 +211,7 @@ class __FullscreenPlayerState extends State<_FullscreenPlayer> {
                           videoControllerWrapper,
                           showControllers: _showControllers,
                           onSkipPrevious: widget.onSkipPrevious,
+                          onSkipNext: widget.onSkipNext,
                           bufferIndicator: widget.bufferIndicator ??
                               Container(
                                 width: 70.0,
