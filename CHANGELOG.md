@@ -1,3 +1,8 @@
+## 0.0.6
+
+* Fix NPE
+* Make UI more friendly.
+
 ## 0.0.5
 
 * Fix NPE when controller not ready
