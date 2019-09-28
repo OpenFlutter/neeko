@@ -35,7 +35,9 @@ class _NeekoPlayerState extends State<NeekoPlayer> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return VideoPlayer(widget.controllerWrapper.controller);
+    return widget.controllerWrapper.controller == null
+        ? Container()
+        : VideoPlayer(widget.controllerWrapper.controller);
   }
 
   @override

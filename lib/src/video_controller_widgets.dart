@@ -14,6 +14,7 @@
 //See the Mulan PSL v1 for more details.
 
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -62,12 +63,14 @@ class _CenterControllerActionButtonsState
   void initState() {
     super.initState();
     _controllerWrapper = widget.controllerWrapper;
+    _controllerWrapper.addListener(() {
+      _attachListenerToController();
+    });
     _animController = AnimationController(
       vsync: this,
       value: 0,
       duration: Duration(milliseconds: 300),
     );
-    _attachListenerToController();
     widget.showControllers.addListener(() {
       if (mounted) setState(() {});
     });
@@ -80,7 +83,7 @@ class _CenterControllerActionButtonsState
   }
 
   _attachListenerToController() {
-    controller.addListener(
+    controller?.addListener(
       () {
         if (!mounted) {
           return;
@@ -103,6 +106,10 @@ class _CenterControllerActionButtonsState
 
   @override
   Widget build(BuildContext context) {
+    if (_controllerWrapper.controller == null) {
+      return Container();
+    }
+
     final iconSize = 60.0;
 
     if (_controllerWrapper.hashCode != widget.controllerWrapper.hashCode) {
@@ -161,7 +168,11 @@ class _CenterControllerActionButtonsState
     }
   }
 
-  _play() {
+  _play() async {
+    if (!controller.value.initialized) {
+      return;
+    }
+
     if (_isPlaying) {
       controller.pause();
     } else {
@@ -169,7 +180,8 @@ class _CenterControllerActionButtonsState
         controller.play();
       } else if (controller.value.position.inMilliseconds >=
           controller.value.duration.inMilliseconds) {
-        controller.seekTo(Duration(seconds: 0));
+        await controller.seekTo(Duration(seconds: 0));
+        controller.play();
       } else {
         controller.play();
       }
@@ -428,7 +440,9 @@ class _BottomBarState extends State<BottomBar> {
   void initState() {
     super.initState();
     _controllerWrapper = widget.controllerWrapper;
-    _attachListenerToController();
+    _controllerWrapper.addListener(() {
+      _attachListenerToController();
+    });
     widget.showControllers.addListener(
       () {
         if (mounted) setState(() {});
@@ -437,7 +451,7 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   _attachListenerToController() {
-    controller.addListener(
+    controller?.addListener(
       () {
         if (controller.value.duration == null ||
             controller.value.position == null) {

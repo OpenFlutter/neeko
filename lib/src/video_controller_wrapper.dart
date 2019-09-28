@@ -19,9 +19,10 @@ import 'package:flutter/foundation.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoControllerWrapper extends ValueNotifier<DataSource> {
-  VideoPlayerController _videoPlayerController;
+  VideoPlayerController get controller =>
+      _controllerPool.isEmpty ? null : _controllerPool.last;
 
-  VideoPlayerController get controller => _videoPlayerController;
+  List<VideoPlayerController> _controllerPool = [];
 
   DataSource _dataSource;
 
@@ -29,32 +30,40 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
     prepareDataSource(value);
   }
 
-  VideoPlayerController get videoPlayerController => _videoPlayerController;
-
   DataSource get dataSource => _dataSource;
 
-  void prepareDataSource(DataSource dataSource) async {
+  Future prepareDataSource(DataSource dataSource) async {
     _dataSource = dataSource;
 
+    if (_controllerPool.isNotEmpty) {
+      await _controllerPool[0].pause();
+    }
+
+    VideoPlayerController newController;
     switch (dataSource.dataSourceType) {
       case DataSourceType.asset:
-        _videoPlayerController = VideoPlayerController.asset(
-            dataSource.dataSource,
+        newController = VideoPlayerController.asset(dataSource.dataSource,
             package: dataSource.package);
         break;
       case DataSourceType.network:
-        _videoPlayerController =
-            VideoPlayerController.network(dataSource.dataSource);
+        newController = VideoPlayerController.network(dataSource.dataSource);
         break;
       case DataSourceType.file:
-        _videoPlayerController =
-            VideoPlayerController.file(File(dataSource.dataSource));
+        newController = VideoPlayerController.file(File(dataSource.dataSource));
         break;
     }
 
-    await _videoPlayerController.initialize();
-
+    await newController.initialize();
+    _controllerPool.add(newController);
     notifyListeners();
+    //we should dispose the old controller
+    if (_controllerPool.length >= 2) {
+      VideoPlayerController oldController = _controllerPool[0];
+      _controllerPool.remove(oldController);
+      Future.delayed(Duration(seconds: 1), () {
+        oldController.dispose();
+      });
+    }
   }
 }
 
@@ -63,16 +72,19 @@ class DataSource {
   final DataSourceType dataSourceType;
   final String package;
   final String displayName;
+  final dynamic id;
+  final Map extras;
 
-  DataSource.network(this.dataSource, {this.displayName})
+  DataSource.network(this.dataSource, {this.displayName, this.id, this.extras})
       : package = null,
         dataSourceType = DataSourceType.network;
 
-  DataSource.file(File file, {this.displayName})
+  DataSource.file(File file, {this.displayName, this.id, this.extras})
       : dataSource = '${file.path}',
         package = null,
         dataSourceType = DataSourceType.file;
 
-  DataSource.asset(this.dataSource, {this.package, this.displayName})
+  DataSource.asset(this.dataSource,
+      {this.package, this.displayName, this.id, this.extras})
       : dataSourceType = DataSourceType.network;
 }
