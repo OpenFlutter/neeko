@@ -2,6 +2,7 @@
 
 * Fix NPE
 * Make UI more friendly.
+* Fix skip next on work.
 
 ## 0.0.5
 
