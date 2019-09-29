@@ -26,26 +26,22 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
 
   VideoPlayerController _videoPlayerController;
 
-
-
   DataSource _dataSource;
 
   VideoControllerWrapper(DataSource value) : super(value) {
     prepareDataSource(value);
   }
 
-
   ///Get current [dataSource]
   DataSource get dataSource => _dataSource;
-
 
   ///Prepare your [dataSource] and initialize [_videoPlayerController].
   ///Old controllers will be disposed once the one is under buffering or playing.
   Future prepareDataSource(DataSource dataSource) async {
     _dataSource = dataSource;
 
-   await _videoPlayerController?.pause();
-//    if (_controllerPool.isNotEmpty) {
+    await _videoPlayerController?.pause();
+//    if (_con`trollerPool.isNotEmpty) {
 //      await _controllerPool[0].pause();
 //    }
 
@@ -82,17 +78,20 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
   }
 
   _videoControllerListener() {
-    if (_videoPlayerController == null || !_videoPlayerController.value.initialized) {
+    if (_videoPlayerController == null ||
+        !_videoPlayerController.value.initialized) {
       return;
     }
 
-    if (_videoPlayerController.value.isPlaying ||
-        _videoPlayerController.value.isBuffering) {
-      _videoPlayerController.removeListener(_videoControllerListener);
-      _controllerPool.forEach((controller) {
-        controller?.dispose();
-      });
-      _controllerPool.clear();
+    if (_videoPlayerController.value.isPlaying) {
+      if (_videoPlayerController.value.duration.inSeconds <= 1 ||
+          _videoPlayerController.value.position.inSeconds > 1) {
+        _videoPlayerController.removeListener(_videoControllerListener);
+        _controllerPool.forEach((controller) {
+          controller?.dispose();
+        });
+        _controllerPool.clear();
+      }
     }
   }
 }
