@@ -84,22 +84,28 @@ class _CenterControllerActionButtonsState
 
   _attachListenerToController() {
     controller?.addListener(
-      () {
-        if (!mounted) {
-          return;
-        }
-
-        setState(() {
-          _isPlaying = controller.value.isPlaying;
-        });
-
-        if (controller.value.isPlaying) {
-          _animController.forward();
-        } else {
-          _animController.reverse();
-        }
-      },
+      _videoControllerListener
     );
+  }
+
+  _videoControllerListener() {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _isPlaying = controller.value.isPlaying;
+    });
+
+    if (controller.value.isPlaying) {
+      _animController.forward();
+    } else {
+      _animController.reverse();
+    }
+  }
+
+  _removeVideoControllerListener(){
+    controller?.removeListener(_videoControllerListener);
   }
 
   _animate() {}
@@ -112,10 +118,9 @@ class _CenterControllerActionButtonsState
 
     final iconSize = 60.0;
 
-    if (_controllerWrapper.hashCode != widget.controllerWrapper.hashCode) {
-      _controllerWrapper = widget.controllerWrapper;
-      _attachListenerToController();
-    }
+    _removeVideoControllerListener();
+    _attachListenerToController();
+
     if (controller.value.isBuffering) {
       return widget.bufferIndicator;
     } else {
@@ -181,7 +186,7 @@ class _CenterControllerActionButtonsState
       } else if (controller.value.position.inMilliseconds >=
           controller.value.duration.inMilliseconds) {
         await controller.seekTo(Duration(seconds: 0));
-        controller.play();
+        await controller.play();
       } else {
         controller.play();
       }
@@ -213,10 +218,7 @@ class _TouchShutterState extends State<TouchShutter> {
 
   bool _dragging = false;
 
-
   VideoPlayerController get controller => widget.controllerWrapper.controller;
-
-
 
   @override
   void initState() {
@@ -228,7 +230,7 @@ class _TouchShutterState extends State<TouchShutter> {
 
   @override
   Widget build(BuildContext context) {
-    if(controller == null){
+    if (controller == null) {
       return Container();
     }
 
@@ -433,7 +435,7 @@ class _BottomBarState extends State<BottomBar> {
 
   VideoControllerWrapper _controllerWrapper;
 
-  VideoPlayerController get controller => _controllerWrapper.controller;
+  VideoPlayerController get controller => widget.controllerWrapper.controller;
 
   set controllerWrapper(VideoControllerWrapper controllerWrapper) =>
       _controllerWrapper = controllerWrapper;
@@ -453,31 +455,33 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   _attachListenerToController() {
-    controller?.addListener(
-      () {
-        if (controller.value.duration == null ||
-            controller.value.position == null) {
-          return;
-        }
+    controller?.addListener(_videoControllerListener);
+  }
 
-        if (mounted) {
-          setState(() {
-            _currentPosition = controller.value.duration.inMilliseconds == 0
-                ? 0
-                : controller.value.position.inMilliseconds;
-            _duration = controller.value.duration.inMilliseconds;
-          });
-        }
-      },
-    );
+  _videoControllerListener() {
+    if (controller.value.duration == null ||
+        controller.value.position == null) {
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _currentPosition = controller.value.duration.inMilliseconds == 0
+            ? 0
+            : controller.value.position.inMilliseconds;
+        _duration = controller.value.duration.inMilliseconds;
+      });
+    }
+  }
+
+  _removeVideoControllerListener() {
+    controller?.removeListener(_videoControllerListener);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_controllerWrapper.hashCode != widget.controllerWrapper.hashCode) {
-      controllerWrapper = widget.controllerWrapper;
-      _attachListenerToController();
-    }
+    _removeVideoControllerListener();
+    _attachListenerToController();
 
     return Visibility(
       visible: widget.showControllers.value,

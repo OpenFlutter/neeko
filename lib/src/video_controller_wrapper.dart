@@ -60,10 +60,16 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
     if (_controllerPool.length >= 2) {
       VideoPlayerController oldController = _controllerPool[0];
       _controllerPool.remove(oldController);
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(Duration(seconds: 5), () {
         oldController.dispose();
       });
     }
+  }
+
+
+
+  notifyAll(){
+    notifyListeners();
   }
 }
 

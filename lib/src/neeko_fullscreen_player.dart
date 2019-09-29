@@ -163,8 +163,16 @@ class __FullscreenPlayerState extends State<_FullscreenPlayer> {
       }
     });
 
+    controller?.addListener(() {
+      if (mounted) {
+        setState(() {
+//          _autoPlay();
+        });
+      }
+    });
+
     widget.videoControllerWrapper.addListener(() {
-      widget.videoControllerWrapper.controller.addListener(() {
+      controller.addListener(() {
         if (mounted) {
           setState(() {
 //          _autoPlay();
