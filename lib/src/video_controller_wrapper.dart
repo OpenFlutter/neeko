@@ -13,16 +13,20 @@
 //
 //See the Mulan PSL v1 for more details.
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoControllerWrapper extends ValueNotifier<DataSource> {
-  VideoPlayerController get controller =>
-      _controllerPool.isEmpty ? null : _controllerPool.last;
+  VideoPlayerController get controller => _videoPlayerController;
 
   List<VideoPlayerController> _controllerPool = [];
+
+  VideoPlayerController _videoPlayerController;
+
+
 
   DataSource _dataSource;
 
@@ -30,14 +34,20 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
     prepareDataSource(value);
   }
 
+
+  ///Get current [dataSource]
   DataSource get dataSource => _dataSource;
 
+
+  ///Prepare your [dataSource] and initialize [_videoPlayerController].
+  ///Old controllers will be disposed once the one is under buffering or playing.
   Future prepareDataSource(DataSource dataSource) async {
     _dataSource = dataSource;
 
-    if (_controllerPool.isNotEmpty) {
-      await _controllerPool[0].pause();
-    }
+   await _videoPlayerController?.pause();
+//    if (_controllerPool.isNotEmpty) {
+//      await _controllerPool[0].pause();
+//    }
 
     VideoPlayerController newController;
     switch (dataSource.dataSourceType) {
@@ -53,23 +63,37 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
         break;
     }
 
+    newController.addListener(_videoControllerListener);
     await newController.initialize();
-    _controllerPool.add(newController);
+    _controllerPool.add(
+        _videoPlayerController); // add the old one into pool then dispose it.
+//    _controllerPool.add(newController);
+    _videoPlayerController = newController;
+
     notifyListeners();
     //we should dispose the old controller
-    if (_controllerPool.length >= 2) {
-      VideoPlayerController oldController = _controllerPool[0];
-      _controllerPool.remove(oldController);
-      Future.delayed(Duration(seconds: 5), () {
-        oldController.dispose();
-      });
-    }
+//    if (_controllerPool.length >= 2) {
+//      VideoPlayerController oldController = _controllerPool[0];
+//      _controllerPool.remove(oldController);
+//      Future.delayed(Duration(seconds: 5), () {
+//        oldController.dispose();
+//      });
+//    }
   }
 
+  _videoControllerListener() {
+    if (_videoPlayerController == null || !_videoPlayerController.value.initialized) {
+      return;
+    }
 
-
-  notifyAll(){
-    notifyListeners();
+    if (_videoPlayerController.value.isPlaying ||
+        _videoPlayerController.value.isBuffering) {
+      _videoPlayerController.removeListener(_videoControllerListener);
+      _controllerPool.forEach((controller) {
+        controller?.dispose();
+      });
+      _controllerPool.clear();
+    }
   }
 }
 
