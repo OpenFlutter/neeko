@@ -62,6 +62,7 @@ class NeekoPlayerWidget extends StatefulWidget {
   /// When the skip previous button tapped
   final Function onSkipPrevious;
 
+  /// When the skip previous button tapped
   final Function onSkipNext;
 
   final Color progressBarPlayedColor;
