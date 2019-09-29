@@ -3,6 +3,7 @@
 * Fix NPE
 * Make UI more friendly.
 * Fix skip next on work.
+* Fix bugs about toggling screen mode.
 
 ## 0.0.5
 
