@@ -24,7 +24,6 @@ import 'neeko_player_options.dart';
 import 'video_controller_widgets.dart';
 import 'video_controller_wrapper.dart';
 
-
 ///Build [_FullscreenPlayer]
 Widget fullScreenRoutePageBuilder(
     {@required BuildContext context,

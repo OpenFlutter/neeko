@@ -83,9 +83,7 @@ class _CenterControllerActionButtonsState
   }
 
   _attachListenerToController() {
-    controller?.addListener(
-      _videoControllerListener
-    );
+    controller?.addListener(_videoControllerListener);
   }
 
   _videoControllerListener() {
@@ -104,7 +102,7 @@ class _CenterControllerActionButtonsState
     }
   }
 
-  _removeVideoControllerListener(){
+  _removeVideoControllerListener() {
     controller?.removeListener(_videoControllerListener);
   }
 

@@ -50,7 +50,6 @@ class NeekoPlayerOptions {
   /// Default = true
   final bool showFullScreenButton;
 
-
   ///Values given to [SystemChrome.setEnabledSystemUIOverlays(overlays)] when enter
   ///fullscreen mode.
   final List<DeviceOrientation> preferredOrientationsWhenEnterLandscape;
