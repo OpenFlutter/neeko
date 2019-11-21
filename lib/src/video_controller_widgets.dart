@@ -527,6 +527,9 @@ class _BottomBarState extends State<BottomBar> {
               color: Colors.white,
             ),
             onPressed: () {
+              if(controller == null || !controller.value.initialized){
+                return;
+              }
               if (widget.isFullscreen && widget.onExitFullscreen != null) {
                 widget.onExitFullscreen();
               } else if (!widget.isFullscreen &&
@@ -679,6 +682,10 @@ class _LiveBottomBarState extends State<LiveBottomBar> {
               color: Colors.white,
             ),
             onPressed: () {
+              if(controller == null || !controller.value.initialized){
+                return;
+              }
+
               if (widget.isFullscreen && widget.onExitFullscreen != null) {
                 widget.onExitFullscreen();
               } else if (!widget.isFullscreen &&

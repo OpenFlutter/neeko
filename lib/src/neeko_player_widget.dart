@@ -98,7 +98,7 @@ class NeekoPlayerWidget extends StatefulWidget {
 }
 
 class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
-  final _showControllers = ValueNotifier<bool>(false);
+  final _showControllers = ValueNotifier<bool>(true);
 
   Timer _timer;
 
@@ -132,6 +132,12 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
     _showControllers.addListener(() {
       _timer?.cancel();
       if (_showControllers.value) {
+        if (controller == null ||
+            !controller.value.initialized ||
+            controller.value.hasError) {
+          return;
+        }
+
         _timer = Timer(
           widget.controllerTimeout,
           () => _showControllers.value = false,
@@ -144,6 +150,10 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 //    controller = widget.videoPlayerController;
 //    controller.isFullScreen = widget.inFullScreen ?? false;
 //    controller.addListener(_listener);
+
+    if (controller == null || !controller.value.initialized) {
+      _showControllers.value = true;
+    }
   }
 
   _configureVideoPlayer() {
