@@ -132,12 +132,6 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
     _showControllers.addListener(() {
       _timer?.cancel();
       if (_showControllers.value) {
-        if (controller == null ||
-            !controller.value.initialized ||
-            controller.value.hasError) {
-          return;
-        }
-
         _timer = Timer(
           widget.controllerTimeout,
           () => _showControllers.value = false,
