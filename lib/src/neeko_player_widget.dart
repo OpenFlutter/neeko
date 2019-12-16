@@ -144,10 +144,6 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 //    controller = widget.videoPlayerController;
 //    controller.isFullScreen = widget.inFullScreen ?? false;
 //    controller.addListener(_listener);
-
-    if (controller == null || !controller.value.initialized) {
-      _showControllers.value = true;
-    }
   }
 
   _configureVideoPlayer() {
