@@ -98,7 +98,7 @@ class NeekoPlayerWidget extends StatefulWidget {
 }
 
 class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
-  final _showControllers = ValueNotifier<bool>(true);
+  final _showControllers = ValueNotifier<bool>(false);
 
   Timer _timer;
 
