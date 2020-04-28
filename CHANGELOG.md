@@ -1,3 +1,7 @@
+## 0.0.7
+* update Video_Player
+* support for subtitle
+
 ## 0.0.6
 
 * Fix NPE
