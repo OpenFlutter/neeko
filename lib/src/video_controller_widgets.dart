@@ -345,6 +345,7 @@ class _TopBarState extends State<TopBar> {
             left: 2.0, right: 2.0, top: MediaQuery.of(context).padding.top),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
               child: widget.leading != null
@@ -368,30 +369,48 @@ class _TopBarState extends State<TopBar> {
   Widget _buildLeading(BuildContext context) {
     final IconData back =
         Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back;
-
+    final title = widget.controllerWrapper.dataSource.displayName;
+    final subtitle = widget.controllerWrapper.dataSource.subtitle;
+    final ThemeData themeData = Theme.of(context);
     return Align(
       alignment: Alignment.centerLeft,
-      child: FlatButton.icon(
-          onPressed: () {
-            if (widget.isFullscreen && widget.onLandscapeBackTap != null) {
-              widget.onLandscapeBackTap();
-            } else if (!widget.isFullscreen &&
-                widget.onPortraitBackTap != null) {
-              widget.onPortraitBackTap();
-            }
-          },
-          icon: Icon(
+      child: Row(
+        children: <Widget>[
+          Icon(
             widget.isFullscreen ? Icons.keyboard_arrow_down : back,
             color: Colors.white,
-            size: widget.isFullscreen ? 32 : 24,
           ),
-          label: Text(
-            widget.controllerWrapper.dataSource?.displayName == null
-                ? ""
-                : widget.controllerWrapper.dataSource.displayName,
-            style: TextStyle(
-                color: Colors.white, fontSize: widget.isFullscreen ? 16 : 14),
-          )),
+          SizedBox(
+            width: 8,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              if (title != null)
+                Text(
+                  title,
+                  maxLines: 1,
+                  style:
+                      themeData.textTheme.subhead.copyWith(color: Colors.white),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              if (subtitle != null)
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  softWrap: true,
+                  style:
+                      themeData.textTheme.body1.copyWith(color: Colors.white),
+                  overflow: TextOverflow.ellipsis,
+                )
+            ],
+          ),
+          SizedBox(
+            width: 8,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -527,7 +546,7 @@ class _BottomBarState extends State<BottomBar> {
               color: Colors.white,
             ),
             onPressed: () {
-              if(controller == null || !controller.value.initialized){
+              if (controller == null || !controller.value.initialized) {
                 return;
               }
               if (widget.isFullscreen && widget.onExitFullscreen != null) {
@@ -682,7 +701,7 @@ class _LiveBottomBarState extends State<LiveBottomBar> {
               color: Colors.white,
             ),
             onPressed: () {
-              if(controller == null || !controller.value.initialized){
+              if (controller == null || !controller.value.initialized) {
                 return;
               }
 
