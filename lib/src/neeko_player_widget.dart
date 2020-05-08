@@ -193,7 +193,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 
   void pushFullScreenWidget() {
     final TransitionRoute<void> route = PageRouteBuilder<void>(
-      settings: RouteSettings(name: "neeko", isInitialRoute: false),
+      settings: RouteSettings(name: "neeko_full"),
       pageBuilder: (BuildContext context, Animation<double> animation,
               Animation<double> secondaryAnimation) =>
           fullScreenRoutePageBuilder(

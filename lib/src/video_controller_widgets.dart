@@ -376,9 +376,19 @@ class _TopBarState extends State<TopBar> {
       alignment: Alignment.centerLeft,
       child: Row(
         children: <Widget>[
-          Icon(
-            widget.isFullscreen ? Icons.keyboard_arrow_down : back,
-            color: Colors.white,
+          GestureDetector(
+            onTap: () {
+              if (widget.isFullscreen && widget.onLandscapeBackTap != null) {
+                widget.onLandscapeBackTap();
+              } else if (!widget.isFullscreen &&
+                  widget.onPortraitBackTap != null) {
+                widget.onPortraitBackTap();
+              }
+            },
+            child: Icon(
+              widget.isFullscreen ? Icons.keyboard_arrow_down : back,
+              color: Colors.white,
+            ),
           ),
           SizedBox(
             width: 8,

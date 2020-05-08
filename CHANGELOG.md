@@ -1,3 +1,8 @@
+## 0.0.8
+* Compatible with Flutter 1.17
+* Fix bug when back pressed
+* Migrate to Androidx
+
 ## 0.0.7
 * update Video_Player
 * support for subtitle
