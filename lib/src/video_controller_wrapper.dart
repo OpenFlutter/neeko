@@ -118,5 +118,5 @@ class DataSource {
 
   DataSource.asset(this.dataSource,
       {this.package, this.displayName, this.id, this.extras, this.subtitle})
-      : dataSourceType = DataSourceType.network;
+      : dataSourceType = DataSourceType.asset;
 }
