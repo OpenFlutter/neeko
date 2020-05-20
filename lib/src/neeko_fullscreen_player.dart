@@ -17,7 +17,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:video_player/video_player.dart';
 
 import 'neeko_player.dart';
 import 'neeko_player_options.dart';

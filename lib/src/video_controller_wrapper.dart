@@ -18,7 +18,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:video_player/video_player.dart';
 
-class VideoControllerWrapper extends ValueNotifier<DataSource> {
+abstract class VideoControllerWrapper extends ValueNotifier<DataSource> {
   VideoPlayerController get controller =>
       _controllerPool.isEmpty ? null : _controllerPool.last;
 
