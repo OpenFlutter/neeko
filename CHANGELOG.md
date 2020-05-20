@@ -1,3 +1,6 @@
+## 0.0.9
+* Fix #15
+
 ## 0.0.8
 * Compatible with Flutter 1.17
 * Fix bug when back pressed
