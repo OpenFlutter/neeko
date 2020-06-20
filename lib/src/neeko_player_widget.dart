@@ -70,6 +70,9 @@ class NeekoPlayerWidget extends StatefulWidget {
   final Color progressBarHandleColor;
   final Color progressBarBackgroundColor;
 
+  /// Allow developers to indicate a custom tag (which is linked with its corresponding fullscreen)
+  final String tag;
+
   NeekoPlayerWidget(
       {Key key,
       @required this.videoControllerWrapper,
@@ -88,7 +91,8 @@ class NeekoPlayerWidget extends StatefulWidget {
       this.progressBarPlayedColor,
       this.progressBarBufferedColor: const Color(0xFF757575),
       this.progressBarHandleColor,
-      this.progressBarBackgroundColor: const Color(0xFFF5F5F5)})
+      this.progressBarBackgroundColor: const Color(0xFFF5F5F5),
+      this.tag: "com.jarvanmo.neekoPlayerHeroTag"})
       : assert(videoControllerWrapper != null),
         assert(playerOptions != null),
         super(key: key);
@@ -247,7 +251,7 @@ class _NeekoPlayerWidgetState extends State<NeekoPlayerWidget> {
 //    }
 
     return Hero(
-      tag: "com.jarvanmo.neekoPlayerHeroTag",
+      tag: this.widget.tag,
       child: Container(
         width: widget.width ?? MediaQuery.of(context).size.width,
         child: AspectRatio(

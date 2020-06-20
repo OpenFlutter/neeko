@@ -39,7 +39,8 @@ Widget fullScreenRoutePageBuilder(
     Duration startAt,
     Function onSkipPrevious,
     Function onSkipNext,
-    NeekoPlayerOptions playerOptions}) {
+    NeekoPlayerOptions playerOptions,
+    String tag}) {
   return _FullscreenPlayer(
     videoControllerWrapper: videoControllerWrapper,
     aspectRatio: aspectRatio,
@@ -53,6 +54,7 @@ Widget fullScreenRoutePageBuilder(
     playerOptions: playerOptions,
     onSkipPrevious: onSkipPrevious,
     onSkipNext: onSkipNext,
+    tag: "com.jarvanmo.neekoPlayerHeroTag",
   );
 }
 //
@@ -110,6 +112,8 @@ class _FullscreenPlayer extends StatefulWidget {
   final Color progressBarHandleColor;
   final Color progressBarBackgroundColor;
 
+  final String tag;
+
   const _FullscreenPlayer(
       {Key key,
       this.videoControllerWrapper,
@@ -128,7 +132,8 @@ class _FullscreenPlayer extends StatefulWidget {
       this.progressBarPlayedColor,
       this.progressBarBufferedColor,
       this.progressBarHandleColor,
-      this.progressBarBackgroundColor})
+      this.progressBarBackgroundColor,
+      this.tag})
       : super(key: key);
 
   @override
@@ -200,7 +205,7 @@ class __FullscreenPlayerState extends State<_FullscreenPlayer> {
       child: SafeArea(
         child: Center(
           child: Hero(
-            tag: "com.jarvanmo.neekoPlayerHeroTag",
+            tag: this.widget.tag,
             child: Container(
               width: widget.width ?? MediaQuery.of(context).size.width,
               child: AspectRatio(
