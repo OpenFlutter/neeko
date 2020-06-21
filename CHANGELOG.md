@@ -1,3 +1,6 @@
+## 0.0.10
+* Allow users pass their own tag so that we can display multi neeko in the same page.
+
 ## 0.0.9
 * Fix #15
 
