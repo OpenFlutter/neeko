@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:neeko/neeko.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoControllerWrapper extends ValueNotifier<DataSource> {
@@ -52,7 +53,12 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
             package: dataSource.package);
         break;
       case DataSourceType.network:
-        newController = VideoPlayerController.network(dataSource.dataSource);
+        VideoFormat videoFormat;
+        if (dataSource.formatHint != null) {
+          videoFormat = _neekoFormatToVideoFormat(_dataSource.formatHint);
+        }
+        newController = VideoPlayerController.network(dataSource.dataSource,
+            formatHint: videoFormat);
         break;
       case DataSourceType.file:
         newController = VideoPlayerController.file(File(dataSource.dataSource));
@@ -94,6 +100,26 @@ class VideoControllerWrapper extends ValueNotifier<DataSource> {
       }
     }
   }
+
+  VideoFormat _neekoFormatToVideoFormat(NeekoVideoFormat neekoVideoFormat) {
+    VideoFormat format;
+    switch (neekoVideoFormat) {
+      case NeekoVideoFormat.dash:
+        format = VideoFormat.dash;
+        break;
+      case NeekoVideoFormat.hls:
+        format =  VideoFormat.hls;
+        break;
+      case NeekoVideoFormat.ss:
+        format =  VideoFormat.ss;
+        break;
+      case NeekoVideoFormat.other:
+        format =  VideoFormat.other;
+        break;
+    }
+
+    return format;
+  }
 }
 
 class DataSource {
@@ -104,9 +130,10 @@ class DataSource {
   final String subtitle;
   final dynamic id;
   final Map extras;
+  final NeekoVideoFormat formatHint;
 
   DataSource.network(this.dataSource,
-      {this.displayName, this.id, this.extras, this.subtitle})
+      {this.formatHint, this.displayName, this.id, this.extras, this.subtitle})
       : package = null,
         dataSourceType = DataSourceType.network;
 
@@ -114,9 +141,11 @@ class DataSource {
       {this.displayName, this.id, this.extras, this.subtitle})
       : dataSource = '${file.path}',
         package = null,
-        dataSourceType = DataSourceType.file;
+        dataSourceType = DataSourceType.file,
+        formatHint = null;
 
   DataSource.asset(this.dataSource,
       {this.package, this.displayName, this.id, this.extras, this.subtitle})
-      : dataSourceType = DataSourceType.asset;
+      : dataSourceType = DataSourceType.asset,
+        formatHint = null;
 }
