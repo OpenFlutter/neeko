@@ -23,7 +23,7 @@ import 'package:video_player/video_player.dart';
 class VideoControllerWrapper extends ValueNotifier<DataSource> {
   VideoPlayerController get controller => _videoPlayerController;
 
-  List<VideoPlayerController> _controllerPool = [];
+  final List<VideoPlayerController> _controllerPool = [];
 
   VideoPlayerController _videoPlayerController;
 
